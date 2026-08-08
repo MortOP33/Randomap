@@ -1,0 +1,26 @@
+# Visual Studio
+.vs/
+
+# Build outputs
+bin/
+obj/
+
+# Visual Studio user-specific files
+*.user
+*.suo
+
+# Test results
+TestResults/
+
+# NuGet
+packages/
+
+# Generated build artifacts
+artifacts/
+
+# Visual Studio Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
