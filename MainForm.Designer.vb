@@ -40,7 +40,9 @@ Partial Class MainForm
         Label4 = New System.Windows.Forms.Label()
         trkDensite = New System.Windows.Forms.TrackBar()
         lblValeurDensite = New System.Windows.Forms.Label()
+        tlpGenerer = New System.Windows.Forms.TableLayoutPanel()
         btnGenerer = New System.Windows.Forms.Button()
+        chkDetail = New System.Windows.Forms.CheckBox()
         tlpRepartition = New System.Windows.Forms.TableLayoutPanel()
         Label5 = New System.Windows.Forms.Label()
         Label6 = New System.Windows.Forms.Label()
@@ -67,6 +69,7 @@ Partial Class MainForm
         CType(nudPoidsMax, ComponentModel.ISupportInitialize).BeginInit()
         tlpDensite.SuspendLayout()
         CType(trkDensite, ComponentModel.ISupportInitialize).BeginInit()
+        tlpGenerer.SuspendLayout()
         tlpRepartition.SuspendLayout()
         CType(trkLeger, ComponentModel.ISupportInitialize).BeginInit()
         CType(trkLourd, ComponentModel.ISupportInitialize).BeginInit()
@@ -212,7 +215,7 @@ Partial Class MainForm
         tlpParametresGeneraux.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F))
         tlpParametresGeneraux.Controls.Add(tlpPoids, 0, 0)
         tlpParametresGeneraux.Controls.Add(tlpDensite, 0, 1)
-        tlpParametresGeneraux.Controls.Add(btnGenerer, 0, 2)
+        tlpParametresGeneraux.Controls.Add(tlpGenerer, 0, 2)
         tlpParametresGeneraux.Dock = System.Windows.Forms.DockStyle.Fill
         tlpParametresGeneraux.Location = New System.Drawing.Point(344, 3)
         tlpParametresGeneraux.Name = "tlpParametresGeneraux"
@@ -315,16 +318,44 @@ Partial Class MainForm
         lblValeurDensite.TabIndex = 2
         lblValeurDensite.Text = "50"
         ' 
+        ' tlpGenerer
+        ' 
+        tlpGenerer.ColumnCount = 2
+        tlpGenerer.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F))
+        tlpGenerer.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F))
+        tlpGenerer.Controls.Add(btnGenerer, 0, 0)
+        tlpGenerer.Controls.Add(chkDetail, 1, 0)
+        tlpGenerer.Dock = System.Windows.Forms.DockStyle.Fill
+        tlpGenerer.Location = New System.Drawing.Point(3, 101)
+        tlpGenerer.Name = "tlpGenerer"
+        tlpGenerer.RowCount = 1
+        tlpGenerer.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F))
+        tlpGenerer.Size = New System.Drawing.Size(465, 61)
+        tlpGenerer.TabIndex = 2
+        ' 
         ' btnGenerer
         ' 
         btnGenerer.Anchor = System.Windows.Forms.AnchorStyles.None
-        btnGenerer.Font = New System.Drawing.Font("Segoe UI", 20.25F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        btnGenerer.Location = New System.Drawing.Point(60, 106)
+        btnGenerer.Font = New System.Drawing.Font("Segoe UI", 18F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        btnGenerer.Location = New System.Drawing.Point(26, 10)
         btnGenerer.Name = "btnGenerer"
-        btnGenerer.Size = New System.Drawing.Size(350, 50)
-        btnGenerer.TabIndex = 2
+        btnGenerer.Size = New System.Drawing.Size(250, 40)
+        btnGenerer.TabIndex = 0
         btnGenerer.Text = "Générer"
         btnGenerer.UseVisualStyleBackColor = True
+        ' 
+        ' chkDetail
+        ' 
+        chkDetail.Anchor = System.Windows.Forms.AnchorStyles.None
+        chkDetail.AutoSize = True
+        chkDetail.Enabled = False
+        chkDetail.Font = New System.Drawing.Font("Segoe UI", 12F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        chkDetail.Location = New System.Drawing.Point(317, 18)
+        chkDetail.Name = "chkDetail"
+        chkDetail.Size = New System.Drawing.Size(132, 25)
+        chkDetail.TabIndex = 1
+        chkDetail.Text = "Afficher détails"
+        chkDetail.UseVisualStyleBackColor = True
         ' 
         ' tlpRepartition
         ' 
@@ -531,6 +562,8 @@ Partial Class MainForm
         tlpDensite.ResumeLayout(False)
         tlpDensite.PerformLayout()
         CType(trkDensite, ComponentModel.ISupportInitialize).EndInit()
+        tlpGenerer.ResumeLayout(False)
+        tlpGenerer.PerformLayout()
         tlpRepartition.ResumeLayout(False)
         tlpRepartition.PerformLayout()
         CType(trkLeger, ComponentModel.ISupportInitialize).EndInit()
@@ -556,7 +589,6 @@ Partial Class MainForm
     Friend WithEvents tlpParametresGeneraux As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpPoids As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpDensite As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents btnGenerer As System.Windows.Forms.Button
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents nudPoidsMax As System.Windows.Forms.NumericUpDown
     Friend WithEvents Label4 As System.Windows.Forms.Label
@@ -575,4 +607,7 @@ Partial Class MainForm
     Friend WithEvents lblValeurLeger As System.Windows.Forms.Label
     Friend WithEvents lblValeurLourd As System.Windows.Forms.Label
     Friend WithEvents lblValeurEtage As System.Windows.Forms.Label
+    Friend WithEvents tlpGenerer As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents btnGenerer As System.Windows.Forms.Button
+    Friend WithEvents chkDetail As System.Windows.Forms.CheckBox
 End Class
