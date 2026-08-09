@@ -5,17 +5,10 @@ Public Class MainForm
     Private Sub btnGenerer_Click(sender As Object, e As EventArgs) Handles btnGenerer.Click
 
         Dim selectedTemplate As MapTemplate = GetSelectedTemplate()
+        Dim definition As MapTemplateDefinition = MapTemplates.GetDefinition(selectedTemplate)
+        Dim generation As MapGeneration = MapTemplateGenerator.Generate(definition)
 
-        Dim definition As MapTemplateDefinition =
-        MapTemplates.GetDefinition(selectedTemplate)
-
-        MessageBox.Show(
-        $"Gabarit : {selectedTemplate}" & vbCrLf &
-        $"X : {definition.X}" & vbCrLf &
-        $"Y : {definition.Y}" & vbCrLf &
-        $"Grille : {definition.HeightCells} × {definition.WidthCells}" & vbCrLf &
-        $"Objectif : {definition.ObjectiveSizeCells} cases"
-        )
+        mapView.Generation = generation
 
     End Sub
 

@@ -92,14 +92,14 @@ Public Module MapTemplates
         .Template = MapTemplate.Grand,
         .X = 30,
         .Y = 44,
-        .ObjectiveSize = 4
+        .ObjectiveSize = 2
     }
 
     Public ReadOnly Geant As New MapTemplateDefinition With {
         .Template = MapTemplate.Geant,
         .X = 44,
         .Y = 60,
-        .ObjectiveSize = 8
+        .ObjectiveSize = 7.5
     }
 
 
@@ -122,5 +122,44 @@ Public Module MapTemplates
         End Select
 
     End Function
+
+    Public Class MapGeneration
+
+        ' Gabarit utilisé pour cette génération
+        Public Property Template As MapTemplateDefinition
+
+        ' Axe d'insertion tiré au sort
+        Public Property InsertionAxis As InsertionAxis
+
+        ' Mode de jeu tiré au sort
+        Public Property GameMode As GameMode
+
+        ' Paramètres géométriques tirés au sort.
+        ' Toutes les valeurs sont exprimées en cases de 0,1 pouce.
+
+        ' Distance entre la médiane et le bord intérieur
+        ' des objectifs secondaires.
+        Public Property A As Integer
+
+        ' Distance signée entre les bords des objectifs.
+        '
+        ' B > 0  : espace entre les objectifs
+        ' B = 0  : les objectifs se touchent
+        ' B < 0  : les objectifs se recouvrent sur leur axe
+        '
+        ' En mode PurCentre, la même valeur est appliquée
+        ' symétriquement au-dessus et au-dessous du centre.
+        Public Property B As Integer
+
+        ' Décalage du carré central en mode Offset.
+        Public Property Z As Integer
+
+        ' Zones d'insertion
+        Public Property InsertionZones As New List(Of InsertionZone)
+
+        ' Zones d'objectif
+        Public Property ObjectiveZones As New List(Of ObjectiveZone)
+
+    End Class
 
 End Module

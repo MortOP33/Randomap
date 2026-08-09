@@ -25,7 +25,6 @@ Partial Class MainForm
         tabMain = New System.Windows.Forms.TabControl()
         tabCreationMap = New System.Windows.Forms.TabPage()
         tlpCreationMap = New System.Windows.Forms.TableLayoutPanel()
-        pnlMap = New System.Windows.Forms.Panel()
         tlpParametres = New System.Windows.Forms.TableLayoutPanel()
         tlpDimensions = New System.Windows.Forms.TableLayoutPanel()
         Label1 = New System.Windows.Forms.Label()
@@ -55,6 +54,7 @@ Partial Class MainForm
         lblValeurLeger = New System.Windows.Forms.Label()
         lblValeurLourd = New System.Windows.Forms.Label()
         lblValeurEtage = New System.Windows.Forms.Label()
+        mapView = New MapView()
         tabGestionBDD = New System.Windows.Forms.TabPage()
         tlpGestionBDD = New System.Windows.Forms.TableLayoutPanel()
         btnAjouterPiece = New System.Windows.Forms.Button()
@@ -106,8 +106,8 @@ Partial Class MainForm
         ' 
         tlpCreationMap.ColumnCount = 1
         tlpCreationMap.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F))
-        tlpCreationMap.Controls.Add(pnlMap, 0, 0)
         tlpCreationMap.Controls.Add(tlpParametres, 0, 1)
+        tlpCreationMap.Controls.Add(mapView, 0, 0)
         tlpCreationMap.Dock = System.Windows.Forms.DockStyle.Fill
         tlpCreationMap.Location = New System.Drawing.Point(3, 3)
         tlpCreationMap.Name = "tlpCreationMap"
@@ -116,16 +116,6 @@ Partial Class MainForm
         tlpCreationMap.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F))
         tlpCreationMap.Size = New System.Drawing.Size(1370, 827)
         tlpCreationMap.TabIndex = 0
-        ' 
-        ' pnlMap
-        ' 
-        pnlMap.Anchor = System.Windows.Forms.AnchorStyles.None
-        pnlMap.BackColor = Drawing.Color.Silver
-        pnlMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        pnlMap.Location = New System.Drawing.Point(135, 10)
-        pnlMap.Name = "pnlMap"
-        pnlMap.Size = New System.Drawing.Size(1100, 630)
-        pnlMap.TabIndex = 0
         ' 
         ' tlpParametres
         ' 
@@ -514,6 +504,15 @@ Partial Class MainForm
         lblValeurEtage.TabIndex = 8
         lblValeurEtage.Text = "50"
         ' 
+        ' mapView
+        ' 
+        mapView.Dock = System.Windows.Forms.DockStyle.Fill
+        mapView.Location = New System.Drawing.Point(3, 3)
+        mapView.Name = "mapView"
+        mapView.Size = New System.Drawing.Size(1364, 644)
+        mapView.TabIndex = 2
+        mapView.Text = "MapView1"
+        ' 
         ' tabGestionBDD
         ' 
         tabGestionBDD.Controls.Add(tlpGestionBDD)
@@ -604,7 +603,6 @@ Partial Class MainForm
     Friend WithEvents tabCreationMap As System.Windows.Forms.TabPage
     Friend WithEvents tabGestionBDD As System.Windows.Forms.TabPage
     Friend WithEvents tlpCreationMap As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents pnlMap As System.Windows.Forms.Panel
     Friend WithEvents tlpParametres As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpDimensions As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpParametresGeneraux As System.Windows.Forms.TableLayoutPanel
@@ -637,4 +635,5 @@ Partial Class MainForm
     Friend WithEvents rdoStandard As System.Windows.Forms.RadioButton
     Friend WithEvents rdoGrand As System.Windows.Forms.RadioButton
     Friend WithEvents rdoGeant As System.Windows.Forms.RadioButton
+    Friend WithEvents mapView As MapView
 End Class
