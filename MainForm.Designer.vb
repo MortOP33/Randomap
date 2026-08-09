@@ -30,8 +30,10 @@ Partial Class MainForm
         tlpDimensions = New System.Windows.Forms.TableLayoutPanel()
         Label1 = New System.Windows.Forms.Label()
         Label2 = New System.Windows.Forms.Label()
-        nudMapX = New System.Windows.Forms.NumericUpDown()
-        nudMapY = New System.Windows.Forms.NumericUpDown()
+        Label8 = New System.Windows.Forms.Label()
+        rdoStandard = New System.Windows.Forms.RadioButton()
+        rdoGrand = New System.Windows.Forms.RadioButton()
+        rdoGeant = New System.Windows.Forms.RadioButton()
         tlpParametresGeneraux = New System.Windows.Forms.TableLayoutPanel()
         tlpPoids = New System.Windows.Forms.TableLayoutPanel()
         Label3 = New System.Windows.Forms.Label()
@@ -62,8 +64,6 @@ Partial Class MainForm
         tlpCreationMap.SuspendLayout()
         tlpParametres.SuspendLayout()
         tlpDimensions.SuspendLayout()
-        CType(nudMapX, ComponentModel.ISupportInitialize).BeginInit()
-        CType(nudMapY, ComponentModel.ISupportInitialize).BeginInit()
         tlpParametresGeneraux.SuspendLayout()
         tlpPoids.SuspendLayout()
         CType(nudPoidsMax, ComponentModel.ISupportInitialize).BeginInit()
@@ -146,68 +146,95 @@ Partial Class MainForm
         ' 
         ' tlpDimensions
         ' 
-        tlpDimensions.ColumnCount = 2
-        tlpDimensions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F))
-        tlpDimensions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F))
-        tlpDimensions.Controls.Add(Label1, 0, 0)
-        tlpDimensions.Controls.Add(Label2, 0, 1)
-        tlpDimensions.Controls.Add(nudMapX, 1, 0)
-        tlpDimensions.Controls.Add(nudMapY, 1, 1)
+        tlpDimensions.ColumnCount = 3
+        tlpDimensions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F))
+        tlpDimensions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F))
+        tlpDimensions.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F))
+        tlpDimensions.Controls.Add(Label1, 0, 1)
+        tlpDimensions.Controls.Add(Label2, 1, 1)
+        tlpDimensions.Controls.Add(Label8, 2, 1)
+        tlpDimensions.Controls.Add(rdoStandard, 0, 0)
+        tlpDimensions.Controls.Add(rdoGrand, 1, 0)
+        tlpDimensions.Controls.Add(rdoGeant, 2, 0)
         tlpDimensions.Dock = System.Windows.Forms.DockStyle.Fill
         tlpDimensions.Location = New System.Drawing.Point(3, 3)
         tlpDimensions.Name = "tlpDimensions"
         tlpDimensions.RowCount = 2
-        tlpDimensions.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F))
-        tlpDimensions.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F))
+        tlpDimensions.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F))
+        tlpDimensions.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F))
         tlpDimensions.Size = New System.Drawing.Size(335, 165)
         tlpDimensions.TabIndex = 0
         ' 
         ' Label1
         ' 
-        Label1.Anchor = System.Windows.Forms.AnchorStyles.None
+        Label1.Anchor = System.Windows.Forms.AnchorStyles.Top
         Label1.AutoSize = True
-        Label1.Font = New System.Drawing.Font("Segoe UI", 36F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        Label1.Location = New System.Drawing.Point(55, 8)
+        Label1.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        Label1.Location = New System.Drawing.Point(8, 49)
         Label1.Name = "Label1"
-        Label1.Size = New System.Drawing.Size(56, 65)
+        Label1.Size = New System.Drawing.Size(95, 90)
         Label1.TabIndex = 0
-        Label1.Text = "X"
-        Label1.TextAlign = Drawing.ContentAlignment.MiddleRight
+        Label1.Text = "Standard" & vbCrLf & "X = 22" & vbCrLf & "Y = 30" & vbCrLf
+        Label1.TextAlign = Drawing.ContentAlignment.MiddleCenter
         ' 
         ' Label2
         ' 
-        Label2.Anchor = System.Windows.Forms.AnchorStyles.None
+        Label2.Anchor = System.Windows.Forms.AnchorStyles.Top
         Label2.AutoSize = True
-        Label2.Font = New System.Drawing.Font("Segoe UI", 36F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        Label2.Location = New System.Drawing.Point(56, 91)
+        Label2.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        Label2.Location = New System.Drawing.Point(130, 49)
         Label2.Name = "Label2"
-        Label2.Size = New System.Drawing.Size(55, 65)
+        Label2.Size = New System.Drawing.Size(73, 90)
         Label2.TabIndex = 1
-        Label2.Text = "Y"
+        Label2.Text = "Grand" & vbCrLf & "X = 30" & vbCrLf & "Y = 44"
+        Label2.TextAlign = Drawing.ContentAlignment.MiddleCenter
         ' 
-        ' nudMapX
+        ' Label8
         ' 
-        nudMapX.Anchor = System.Windows.Forms.AnchorStyles.None
-        nudMapX.Font = New System.Drawing.Font("Segoe UI", 36F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        nudMapX.Location = New System.Drawing.Point(170, 5)
-        nudMapX.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        nudMapX.Name = "nudMapX"
-        nudMapX.Size = New System.Drawing.Size(162, 71)
-        nudMapX.TabIndex = 2
-        nudMapX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        nudMapX.Value = New Decimal(New Integer() {22, 0, 0, 0})
+        Label8.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Label8.AutoSize = True
+        Label8.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        Label8.Location = New System.Drawing.Point(242, 49)
+        Label8.Name = "Label8"
+        Label8.Size = New System.Drawing.Size(73, 90)
+        Label8.TabIndex = 2
+        Label8.Text = "Géant" & vbCrLf & "X = 44" & vbCrLf & "Y = 60"
+        Label8.TextAlign = Drawing.ContentAlignment.MiddleCenter
         ' 
-        ' nudMapY
+        ' rdoStandard
         ' 
-        nudMapY.Anchor = System.Windows.Forms.AnchorStyles.None
-        nudMapY.Font = New System.Drawing.Font("Segoe UI", 36F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        nudMapY.Location = New System.Drawing.Point(170, 88)
-        nudMapY.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        nudMapY.Name = "nudMapY"
-        nudMapY.Size = New System.Drawing.Size(162, 71)
-        nudMapY.TabIndex = 3
-        nudMapY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        nudMapY.Value = New Decimal(New Integer() {30, 0, 0, 0})
+        rdoStandard.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        rdoStandard.Checked = True
+        rdoStandard.Font = New System.Drawing.Font("Segoe UI", 9F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        rdoStandard.Location = New System.Drawing.Point(48, 16)
+        rdoStandard.Name = "rdoStandard"
+        rdoStandard.Size = New System.Drawing.Size(15, 30)
+        rdoStandard.TabIndex = 3
+        rdoStandard.TabStop = True
+        rdoStandard.TextAlign = Drawing.ContentAlignment.MiddleCenter
+        rdoStandard.UseVisualStyleBackColor = True
+        ' 
+        ' rdoGrand
+        ' 
+        rdoGrand.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        rdoGrand.Location = New System.Drawing.Point(159, 16)
+        rdoGrand.Name = "rdoGrand"
+        rdoGrand.Size = New System.Drawing.Size(15, 30)
+        rdoGrand.TabIndex = 4
+        rdoGrand.TabStop = True
+        rdoGrand.TextAlign = Drawing.ContentAlignment.MiddleCenter
+        rdoGrand.UseVisualStyleBackColor = True
+        ' 
+        ' rdoGeant
+        ' 
+        rdoGeant.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        rdoGeant.Location = New System.Drawing.Point(271, 16)
+        rdoGeant.Name = "rdoGeant"
+        rdoGeant.Size = New System.Drawing.Size(15, 30)
+        rdoGeant.TabIndex = 5
+        rdoGeant.TabStop = True
+        rdoGeant.TextAlign = Drawing.ContentAlignment.MiddleCenter
+        rdoGeant.UseVisualStyleBackColor = True
         ' 
         ' tlpParametresGeneraux
         ' 
@@ -553,8 +580,6 @@ Partial Class MainForm
         tlpParametres.ResumeLayout(False)
         tlpDimensions.ResumeLayout(False)
         tlpDimensions.PerformLayout()
-        CType(nudMapX, ComponentModel.ISupportInitialize).EndInit()
-        CType(nudMapY, ComponentModel.ISupportInitialize).EndInit()
         tlpParametresGeneraux.ResumeLayout(False)
         tlpPoids.ResumeLayout(False)
         tlpPoids.PerformLayout()
@@ -582,10 +607,6 @@ Partial Class MainForm
     Friend WithEvents pnlMap As System.Windows.Forms.Panel
     Friend WithEvents tlpParametres As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpDimensions As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents nudMapX As System.Windows.Forms.NumericUpDown
-    Friend WithEvents nudMapY As System.Windows.Forms.NumericUpDown
     Friend WithEvents tlpParametresGeneraux As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpPoids As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpDensite As System.Windows.Forms.TableLayoutPanel
@@ -610,4 +631,10 @@ Partial Class MainForm
     Friend WithEvents tlpGenerer As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents btnGenerer As System.Windows.Forms.Button
     Friend WithEvents chkDetail As System.Windows.Forms.CheckBox
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents Label2 As System.Windows.Forms.Label
+    Friend WithEvents Label8 As System.Windows.Forms.Label
+    Friend WithEvents rdoStandard As System.Windows.Forms.RadioButton
+    Friend WithEvents rdoGrand As System.Windows.Forms.RadioButton
+    Friend WithEvents rdoGeant As System.Windows.Forms.RadioButton
 End Class
