@@ -203,8 +203,8 @@ Partial Class PieceEditorForm
         ' tlpCreerPieceType
         ' 
         tlpCreerPieceType.ColumnCount = 2
-        tlpCreerPieceType.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F))
-        tlpCreerPieceType.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F))
+        tlpCreerPieceType.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 58.3333321F))
+        tlpCreerPieceType.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.6666679F))
         tlpCreerPieceType.Controls.Add(lblCreerPieceLeger, 0, 0)
         tlpCreerPieceType.Controls.Add(lblCreerPieceLourd, 0, 1)
         tlpCreerPieceType.Controls.Add(lblCreerPieceEtage, 0, 2)
@@ -228,7 +228,7 @@ Partial Class PieceEditorForm
         lblCreerPieceLeger.Font = New System.Drawing.Font("Segoe UI", 27.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
         lblCreerPieceLeger.Location = New System.Drawing.Point(3, 0)
         lblCreerPieceLeger.Name = "lblCreerPieceLeger"
-        lblCreerPieceLeger.Size = New System.Drawing.Size(141, 71)
+        lblCreerPieceLeger.Size = New System.Drawing.Size(166, 71)
         lblCreerPieceLeger.TabIndex = 0
         lblCreerPieceLeger.Text = "Léger"
         lblCreerPieceLeger.TextAlign = Drawing.ContentAlignment.MiddleRight
@@ -240,7 +240,7 @@ Partial Class PieceEditorForm
         lblCreerPieceLourd.Font = New System.Drawing.Font("Segoe UI", 27.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
         lblCreerPieceLourd.Location = New System.Drawing.Point(3, 71)
         lblCreerPieceLourd.Name = "lblCreerPieceLourd"
-        lblCreerPieceLourd.Size = New System.Drawing.Size(141, 71)
+        lblCreerPieceLourd.Size = New System.Drawing.Size(166, 71)
         lblCreerPieceLourd.TabIndex = 1
         lblCreerPieceLourd.Text = "Lourd"
         lblCreerPieceLourd.TextAlign = Drawing.ContentAlignment.MiddleRight
@@ -252,7 +252,7 @@ Partial Class PieceEditorForm
         lblCreerPieceEtage.Font = New System.Drawing.Font("Segoe UI", 27.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
         lblCreerPieceEtage.Location = New System.Drawing.Point(3, 142)
         lblCreerPieceEtage.Name = "lblCreerPieceEtage"
-        lblCreerPieceEtage.Size = New System.Drawing.Size(141, 73)
+        lblCreerPieceEtage.Size = New System.Drawing.Size(166, 73)
         lblCreerPieceEtage.TabIndex = 2
         lblCreerPieceEtage.Text = "Etage"
         lblCreerPieceEtage.TextAlign = Drawing.ContentAlignment.MiddleRight
@@ -261,9 +261,9 @@ Partial Class PieceEditorForm
         ' 
         rdoCreerPieceLeger.Checked = True
         rdoCreerPieceLeger.Dock = System.Windows.Forms.DockStyle.Bottom
-        rdoCreerPieceLeger.Location = New System.Drawing.Point(150, 18)
+        rdoCreerPieceLeger.Location = New System.Drawing.Point(175, 18)
         rdoCreerPieceLeger.Name = "rdoCreerPieceLeger"
-        rdoCreerPieceLeger.Size = New System.Drawing.Size(142, 50)
+        rdoCreerPieceLeger.Size = New System.Drawing.Size(117, 50)
         rdoCreerPieceLeger.TabIndex = 3
         rdoCreerPieceLeger.TabStop = True
         rdoCreerPieceLeger.UseVisualStyleBackColor = True
@@ -271,18 +271,18 @@ Partial Class PieceEditorForm
         ' rdoCreerPieceLourd
         ' 
         rdoCreerPieceLourd.Dock = System.Windows.Forms.DockStyle.Bottom
-        rdoCreerPieceLourd.Location = New System.Drawing.Point(150, 89)
+        rdoCreerPieceLourd.Location = New System.Drawing.Point(175, 89)
         rdoCreerPieceLourd.Name = "rdoCreerPieceLourd"
-        rdoCreerPieceLourd.Size = New System.Drawing.Size(142, 50)
+        rdoCreerPieceLourd.Size = New System.Drawing.Size(117, 50)
         rdoCreerPieceLourd.TabIndex = 4
         rdoCreerPieceLourd.UseVisualStyleBackColor = True
         ' 
         ' rdoCreerPieceEtage
         ' 
         rdoCreerPieceEtage.Dock = System.Windows.Forms.DockStyle.Bottom
-        rdoCreerPieceEtage.Location = New System.Drawing.Point(150, 162)
+        rdoCreerPieceEtage.Location = New System.Drawing.Point(175, 162)
         rdoCreerPieceEtage.Name = "rdoCreerPieceEtage"
-        rdoCreerPieceEtage.Size = New System.Drawing.Size(142, 50)
+        rdoCreerPieceEtage.Size = New System.Drawing.Size(117, 50)
         rdoCreerPieceEtage.TabIndex = 5
         rdoCreerPieceEtage.UseVisualStyleBackColor = True
         ' 
