@@ -26,4 +26,14 @@ Public Class MainForm
 
     End Function
 
+    Private Sub btnAjouterPiece_Click(sender As Object, e As EventArgs) Handles btnAjouterPiece.Click
+
+        Using formPiece As New PieceEditorForm()
+
+            formPiece.ShowDialog(Me)
+
+        End Using
+
+    End Sub
+
 End Class
