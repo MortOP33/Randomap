@@ -15,7 +15,15 @@ Public Class MainForm
 
         _terrainPieces.AddRange(loadedPieces)
 
+        lblValeurDensite.Text = $"{trkDensite.Value}%"
+
         RefreshGestionBDD()
+
+    End Sub
+
+    Private Sub trkDensite_Scroll(sender As Object, e As EventArgs) Handles trkDensite.Scroll
+
+        lblValeurDensite.Text = $"{trkDensite.Value}%"
 
     End Sub
 
@@ -25,7 +33,7 @@ Public Class MainForm
 
         Dim definition As MapTemplateDefinition = MapTemplates.GetDefinition(selectedTemplate)
 
-        Dim generation As MapGeneration = MapTemplateGenerator.Generate(definition, CInt(nudPoidsMax.Value))
+        Dim generation As MapGeneration = MapTemplateGenerator.Generate(definition, CInt(nudPoidsMax.Value), CInt(trkDensite.Value))
 
         mapView.Generation = generation
 

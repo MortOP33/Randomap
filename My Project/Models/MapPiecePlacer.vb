@@ -1,4 +1,6 @@
-﻿Public Class MapPiecePlacer
+﻿Imports System.Drawing
+
+Public Class MapPiecePlacer
 
     ' =========================================================
     ' PARAMETRES DE PLACEMENT
@@ -162,6 +164,54 @@
     End Function
 
     ' =========================================================
+    ' VERIFICATION DE LA PRESENCE DE POINTS DE CONNECTIONS SUR LA PIECE
+    ' =========================================================
+
+    Public Function HasConnectionCells(piece As TerrainPiece) As Boolean
+
+        For row As Integer = 0 To piece.X - 1
+
+            For column As Integer = 0 To piece.Y - 1
+
+                If piece.Cells(row, column) = TerrainCellState.Connection Then
+
+                    Return True
+
+                End If
+
+            Next
+
+        Next
+
+        Return False
+
+    End Function
+
+    ' =========================================================
+    ' VERIFICATION DE LA PRESENCE DE CONNECTIONS DANS LA MAP
+    ' =========================================================
+
+    Public Function HasAvailableConnections(generation As MapGeneration) As Boolean
+
+        For row As Integer = 0 To generation.Template.HeightCells - 1
+
+            For column As Integer = 0 To generation.Template.WidthCells - 1
+
+                If generation.ConnectionCells(row, column) Then
+
+                    Return True
+
+                End If
+
+            Next
+
+        Next
+
+        Return False
+
+    End Function
+
+    ' =========================================================
     ' ENREGISTREMENT D'UNE PIECE PLACEE
     ' =========================================================
 
@@ -206,6 +256,14 @@
                     mapX,
                     mapY) = True
 
+                If state = TerrainCellState.Connection Then
+
+                    generation.ConnectionCells(
+                        mapX,
+                        mapY) = True
+
+                End If
+
             Next
 
         Next
@@ -230,8 +288,7 @@
 
     Private Function RollPieceRotation() As PieceRotation
 
-        Dim value As Integer =
-        Random.Shared.Next(0, 4)
+        Dim value As Integer = Random.Shared.Next(0, 4)
 
         Select Case value
 
@@ -252,16 +309,40 @@
     End Function
 
     ' =========================================================
+    ' TIRAGE ALEATOIRE DE LA CONNEXTION D'UNE PIECE
+    ' =========================================================
+
+    Public Function RollConnection(density As Integer) As Boolean
+
+        If density <= 0 Then
+            Return False
+        End If
+        If density >= 100 Then
+            Return True
+        End If
+
+        Return Random.Shared.Next(0, 100) < density
+
+    End Function
+
+    ' =========================================================
     ' TENTATIVE DE PLACEMENT D'UNE PIECE
     ' =========================================================
 
-    Public Function TryPlacePiece(generation As MapGeneration, piece As TerrainPiece) As Boolean
+    Public Function TryPlacePiece(generation As MapGeneration, piece As TerrainPiece, connectPiece As Boolean) As Boolean
 
         Dim mapHeight As Integer = generation.Template.HeightCells
 
         Dim mapWidth As Integer = generation.Template.WidthCells
 
         Dim rotation As PieceRotation = RollPieceRotation()
+
+        If connectPiece Then
+
+            Return TryPlacePieceConnected(generation, piece, rotation)
+
+        End If
+
         Dim rotatedHeight As Integer
         Dim rotatedWidth As Integer
         If rotation = PieceRotation.Deg0 OrElse rotation = PieceRotation.Deg180 Then
@@ -328,5 +409,179 @@
         Return False
 
     End Function
+
+    ' =========================================================
+    ' TENTATIVE DE PLACEMENT D'UNE PIECE EN MODE CONNECTE
+    ' =========================================================
+
+    Private Function TryPlacePieceConnected(generation As MapGeneration, piece As TerrainPiece, rotation As PieceRotation) As Boolean
+
+        ' ---------------------------------------------------------
+        ' Construction des positions candidates.
+        ' ---------------------------------------------------------
+
+        Dim candidates As New List(Of Point)
+
+
+        ' ---------------------------------------------------------
+        ' Recherche de toutes les cases Connection de la pièce.
+        ' ---------------------------------------------------------
+
+        Dim pieceHeight As Integer
+        Dim pieceWidth As Integer
+        If rotation = PieceRotation.Deg0 OrElse rotation = PieceRotation.Deg180 Then
+            pieceHeight = piece.X
+            pieceWidth = piece.Y
+        Else
+            pieceHeight = piece.Y
+            pieceWidth = piece.X
+        End If
+
+        For pieceRow As Integer = 0 To pieceHeight - 1
+
+            For pieceColumn As Integer = 0 To pieceWidth - 1
+
+                Dim state As TerrainCellState = MapPieceGeometry.GetRotatedCellState(piece, pieceRow, pieceColumn, rotation)
+                If state <> TerrainCellState.Connection Then
+                    Continue For
+                End If
+
+
+                ' -------------------------------------------------
+                ' Une Connection de la pièce doit être placée
+                ' à côté d'une Connection déjà présente.
+                ' -------------------------------------------------
+
+                For mapRow As Integer = 0 To generation.Template.HeightCells - 1
+
+                    For mapColumn As Integer = 0 To generation.Template.WidthCells - 1
+
+                        If Not generation.ConnectionCells(mapRow, mapColumn) Then
+
+                            Continue For
+
+                        End If
+
+
+                        ' -----------------------------------------
+                        ' Haut
+                        ' -----------------------------------------
+
+                        AddConnectionCandidate(candidates, mapRow - 1, mapColumn, pieceRow, pieceColumn)
+
+
+                        ' -----------------------------------------
+                        ' Bas
+                        ' -----------------------------------------
+
+                        AddConnectionCandidate(candidates, mapRow + 1, mapColumn, pieceRow, pieceColumn)
+
+
+                        ' -----------------------------------------
+                        ' Gauche
+                        ' -----------------------------------------
+
+                        AddConnectionCandidate(candidates, mapRow, mapColumn - 1, pieceRow, pieceColumn)
+
+
+                        ' -----------------------------------------
+                        ' Droite
+                        ' -----------------------------------------
+
+                        AddConnectionCandidate(candidates, mapRow, mapColumn + 1, pieceRow, pieceColumn)
+
+                    Next
+
+                Next
+
+            Next
+
+        Next
+
+
+        ' ---------------------------------------------------------
+        ' Aucune position candidate.
+        ' ---------------------------------------------------------
+
+        If candidates.Count = 0 Then
+
+            Return False
+
+        End If
+
+
+        ' ---------------------------------------------------------
+        ' Mélange aléatoire des candidats.
+        '
+        ' Cela évite de toujours favoriser les premières
+        ' connexions parcourues.
+        ' ---------------------------------------------------------
+
+        ShuffleCandidates(candidates)
+
+
+        ' ---------------------------------------------------------
+        ' Test des positions candidates.
+        ' ---------------------------------------------------------
+
+        For Each candidate As Point In candidates
+
+            If CanPlacePiece(generation, piece, candidate.X, candidate.Y, rotation) Then
+
+                RegisterPlacedPiece(generation, piece, candidate.X, candidate.Y, rotation)
+                Return True
+
+            End If
+
+        Next
+
+        Return False
+
+    End Function
+
+    ' =========================================================
+    ' AJOUT D'UNE POSITION CANDIDATE
+    ' =========================================================
+
+    Private Sub AddConnectionCandidate(candidates As List(Of Point), connectionMapX As Integer, connectionMapY As Integer, connectionPieceX As Integer, connectionPieceY As Integer)
+
+        Dim startX As Integer = connectionMapX - connectionPieceX
+
+        Dim startY As Integer = connectionMapY - connectionPieceY
+
+        Dim candidate As New Point(startX, startY)
+
+        ' ---------------------------------------------------------
+        ' Plusieurs couples de Connections peuvent produire
+        ' exactement la même position.
+        '
+        ' On évite donc les doublons.
+        ' ---------------------------------------------------------
+
+        If Not candidates.Contains(candidate) Then
+
+            candidates.Add(candidate)
+
+        End If
+
+    End Sub
+
+    ' =========================================================
+    ' MELANGE ALEATOIRE DES POSITIONS CANDIDATES
+    ' =========================================================
+
+    Private Sub ShuffleCandidates(candidates As List(Of Point))
+
+        For index As Integer = candidates.Count - 1 To 1 Step -1
+
+            Dim otherIndex As Integer = Random.Shared.Next(0, index + 1)
+            Dim temporary As Point = candidates(index)
+
+            candidates(index) = candidates(otherIndex)
+            candidates(otherIndex) = temporary
+
+        Next
+
+    End Sub
 
 End Class

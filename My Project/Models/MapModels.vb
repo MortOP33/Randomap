@@ -218,6 +218,9 @@ Public Module MapTemplates
         ' Liste des pièces effectivement placées
         Public Property PlacedPieces As New List(Of PlacedTerrainPiece)
 
+        ' Grille interne des cases connectées
+        Public Property ConnectionCells As Boolean(,)
+
         ' Grille interne des cases occupées
         Public Property OccupiedCells As Boolean(,)
 
@@ -235,6 +238,14 @@ Public Module MapTemplates
                 template.HeightCells - 1,
                 template.WidthCells - 1
             ) {}
+
+            Me.ConnectionCells =
+            New Boolean(
+                template.HeightCells - 1,
+                template.WidthCells - 1) {}
+
+            Me.PlacedPieces =
+                New List(Of PlacedTerrainPiece)()
 
         End Sub
 

@@ -4,7 +4,7 @@ Public Module MapTemplateGenerator
 
     Private Const MaxAttempts As Integer = 1000
 
-    Public Function Generate(template As MapTemplateDefinition, targetWeight As Integer) As MapGeneration
+    Public Function Generate(template As MapTemplateDefinition, targetWeight As Integer, connectionDensity As Integer) As MapGeneration
 
         Dim generation As New MapGeneration(template) With {
             .InsertionAxis = RollInsertionAxis(),
@@ -14,7 +14,7 @@ Public Module MapTemplateGenerator
         GenerateInsertionZones(generation)
         GenerateObjectiveZones(generation)
 
-        Dim success As Boolean = GenerateTerrainPieces(generation, targetWeight)
+        Dim success As Boolean = GenerateTerrainPieces(generation, targetWeight, connectionDensity)
         If Not success Then
             Return generation
         End If
@@ -27,7 +27,7 @@ Public Module MapTemplateGenerator
     ' GENERATION DES PIECES DE DECOR
     ' =========================================================
 
-    Private Function GenerateTerrainPieces(generation As MapGeneration, targetWeight As Integer) As Boolean
+    Private Function GenerateTerrainPieces(generation As MapGeneration, targetWeight As Integer, connectionDensity As Integer) As Boolean
 
         Dim repository As New TerrainPieceRepository()
 
@@ -167,7 +167,39 @@ Public Module MapTemplateGenerator
 
             Dim placer As New MapPiecePlacer()
 
-            Dim placed As Boolean = placer.TryPlacePiece(generation, selectedPiece)
+            ' ---------------------------------------------------------
+            ' Détermination du mode de placement
+            ' ---------------------------------------------------------
+
+            Dim connectPiece As Boolean = False
+
+
+            ' ---------------------------------------------------------
+            ' Une connexion ne peut être demandée que si la map
+            ' possède déjà au moins une ConnectionCell.
+            ' ---------------------------------------------------------
+
+            If placer.HasAvailableConnections(generation) Then
+
+                ' -----------------------------------------------------
+                ' Une pièce sans Connection ne peut de toute façon
+                ' pas être placée en mode connecté.
+                ' -----------------------------------------------------
+
+                If placer.HasConnectionCells(selectedPiece) Then
+
+                    connectPiece = placer.RollConnection(connectionDensity)
+
+                End If
+
+            End If
+
+
+            ' ---------------------------------------------------------
+            ' Placement
+            ' ---------------------------------------------------------
+
+            Dim placed As Boolean = placer.TryPlacePiece(generation, selectedPiece, connectPiece)
 
 
             If Not placed Then
