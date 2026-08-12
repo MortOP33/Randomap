@@ -16,6 +16,9 @@ Public Class PieceGridView
     Private _drawingState As TerrainCellState = TerrainCellState.Empty
     Private _lastDrawingCell As Point? = Nothing
 
+    Public Event GridModified()
+    Private _gridModifiedDuringDrag As Boolean
+
     Public Sub New()
 
         SetStyle(
@@ -306,11 +309,15 @@ Public Class PieceGridView
             Return
         End If
 
+        ' Aucun changement réel de la grille
         If _cells(row, column) = state Then
             Return
         End If
 
+        ' La grille vient réellement d'être modifiée
         _cells(row, column) = state
+
+        _gridModifiedDuringDrag = True
 
         Invalidate()
 
@@ -409,7 +416,9 @@ Public Class PieceGridView
             Return
         End If
 
-        ' Début d'un nouveau geste
+        ' Nouveau geste de dessin
+        _gridModifiedDuringDrag = False
+
         _isDrawing = True
         _drawingButton = e.Button
 
@@ -418,18 +427,15 @@ Public Class PieceGridView
             cell.Value.Y,
             cell.Value.X)
 
-        ' Le premier clic détermine le pinceau
         _drawingState =
         GetNextCellState(
             currentState,
             _drawingButton)
 
-        ' Appliquer immédiatement le pinceau
         SetCellState(
         cell.Value,
         _drawingState)
 
-        ' Mémoriser la dernière cellule traversée
         _lastDrawingCell = cell.Value
 
     End Sub
@@ -482,6 +488,14 @@ Public Class PieceGridView
         _drawingState = TerrainCellState.Empty
         _lastDrawingCell = Nothing
 
+        If _gridModifiedDuringDrag Then
+
+            RaiseEvent GridModified()
+
+        End If
+
+        _gridModifiedDuringDrag = False
+
     End Sub
 
     Private Sub ApplyDrawingToCell(cell As Point)
@@ -513,6 +527,31 @@ Public Class PieceGridView
         Next
 
         Return result
+
+    End Function
+
+    Public Function CalculateWeight() As Integer
+
+        Dim weight As Integer = 0
+
+        For row As Integer = 0 To _rows - 1
+
+            For column As Integer = 0 To _columns - 1
+
+                If _cells(row, column) =
+                    TerrainCellState.Occupied OrElse
+                   _cells(row, column) =
+                    TerrainCellState.Connection Then
+
+                    weight += 1
+
+                End If
+
+            Next
+
+        Next
+
+        Return weight
 
     End Function
 

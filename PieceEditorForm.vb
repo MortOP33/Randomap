@@ -29,6 +29,8 @@ Public Class PieceEditorForm
         _pieceGrid.Name = "pieceGridCreerPiece"
         _pieceGrid.Dock = DockStyle.Fill
 
+        AddHandler _pieceGrid.GridModified, AddressOf PieceGrid_GridModified
+
         pnlCreerPieceGrille.Controls.Add(
         _pieceGrid)
 
@@ -76,6 +78,12 @@ Public Class PieceEditorForm
 
     End Sub
 
+    Private Sub PieceGrid_GridModified()
+
+        nudCreerPiecePoids.Value = _pieceGrid.CalculateWeight()
+
+    End Sub
+
     Private Sub btnCreerPieceAnnuler_Click(sender As Object, e As EventArgs) Handles btnCreerPieceAnnuler.Click
 
         DialogResult = DialogResult.Cancel
@@ -114,7 +122,7 @@ Public Class PieceEditorForm
         If _pieceToEdit IsNot Nothing Then
 
             _pieceToEdit.Name =
-            txtCreerPieceNom.Text.Trim()
+            txtCreerPieceNom.Text.Trim
 
             _pieceToEdit.X =
             CInt(nudCreerPieceX.Value)
@@ -125,11 +133,14 @@ Public Class PieceEditorForm
             _pieceToEdit.MaxOccurrences =
             CInt(nudCreerPieceNbMax.Value)
 
+            _pieceToEdit.Weight =
+            CInt(nudCreerPiecePoids.Value)
+
             _pieceToEdit.Type =
             pieceType
 
             _pieceToEdit.Cells =
-            _pieceGrid.GetCellsCopy()
+            _pieceGrid.GetCellsCopy
 
 
             ' La pièce retournée est la pièce existante
@@ -142,12 +153,13 @@ Public Class PieceEditorForm
             ' =====================================================
 
             _piece = New TerrainPiece With {
-            .Name = txtCreerPieceNom.Text.Trim(),
-            .X = CInt(nudCreerPieceX.Value),
-            .Y = CInt(nudCreerPieceY.Value),
-            .MaxOccurrences = CInt(nudCreerPieceNbMax.Value),
+            .Name = txtCreerPieceNom.Text.Trim,
+            .X = nudCreerPieceX.Value,
+            .Y = nudCreerPieceY.Value,
+            .MaxOccurrences = nudCreerPieceNbMax.Value,
+            .Weight = CInt(nudCreerPiecePoids.Value),
             .Type = pieceType,
-            .Cells = _pieceGrid.GetCellsCopy()
+            .Cells = _pieceGrid.GetCellsCopy
         }
 
         End If
@@ -157,6 +169,7 @@ Public Class PieceEditorForm
         Close()
 
     End Sub
+
 
     Private Sub LoadPieceForEditing()
 
@@ -180,6 +193,9 @@ Public Class PieceEditorForm
 
         nudCreerPieceNbMax.Value =
         _pieceToEdit.MaxOccurrences
+
+        nudCreerPiecePoids.Value =
+        _pieceToEdit.Weight
 
 
         ' ---------------------------------------------------------

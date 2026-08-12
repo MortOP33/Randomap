@@ -8,6 +8,8 @@
 
     Public Property MaxOccurrences As Integer
 
+    Public Property Weight As Integer
+
     Public Property Type As TerrainPieceType
 
     Public Property Cells As TerrainCellState(,)
@@ -19,6 +21,7 @@
             .X = X,
             .Y = Y,
             .MaxOccurrences = MaxOccurrences,
+            .Weight = Weight,
             .Type = Type,
             .Cells = New List(Of List(Of Integer))()
         }
@@ -60,6 +63,8 @@ Public Class TerrainPieceData
     Public Property Y As Integer
 
     Public Property MaxOccurrences As Integer
+
+    Public Property Weight As Integer
 
     Public Property Type As TerrainPieceType
 

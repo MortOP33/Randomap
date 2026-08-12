@@ -35,19 +35,19 @@ Public Class MapTemplateDefinition
     ' Dimensions internes, en cases de 0,1 pouce
     Public ReadOnly Property HeightCells As Integer
         Get
-            Return X * 10
+            Return X * MapScale.CellsPerInch
         End Get
     End Property
 
     Public ReadOnly Property WidthCells As Integer
         Get
-            Return Y * 10
+            Return Y * MapScale.CellsPerInch
         End Get
     End Property
 
     Public ReadOnly Property ObjectiveSizeCells As Integer
         Get
-            Return ObjectiveSize * 10
+            Return ObjectiveSize * MapScale.CellsPerInch
         End Get
     End Property
 

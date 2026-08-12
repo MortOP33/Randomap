@@ -44,6 +44,8 @@ Partial Class PieceEditorForm
         tlpCreerPieceBoutons = New System.Windows.Forms.TableLayoutPanel()
         btnCreerPieceEnregistrer = New System.Windows.Forms.Button()
         btnCreerPieceAnnuler = New System.Windows.Forms.Button()
+        lblCreerPiecePoids = New System.Windows.Forms.Label()
+        nudCreerPiecePoids = New System.Windows.Forms.NumericUpDown()
         pnlCreerPieceGrille = New System.Windows.Forms.Panel()
         tlpCreationPiece.SuspendLayout()
         tlpInformationsPiece.SuspendLayout()
@@ -54,6 +56,7 @@ Partial Class PieceEditorForm
         tlpCreerPieceType.SuspendLayout()
         CType(nudCreerPieceNbMax, ComponentModel.ISupportInitialize).BeginInit()
         tlpCreerPieceBoutons.SuspendLayout()
+        CType(nudCreerPiecePoids, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' tlpCreationPiece
@@ -69,7 +72,7 @@ Partial Class PieceEditorForm
         tlpCreationPiece.Name = "tlpCreationPiece"
         tlpCreationPiece.RowCount = 1
         tlpCreationPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F))
-        tlpCreationPiece.Size = New System.Drawing.Size(1231, 743)
+        tlpCreationPiece.Size = New System.Drawing.Size(1231, 883)
         tlpCreationPiece.TabIndex = 0
         ' 
         ' tlpInformationsPiece
@@ -83,21 +86,25 @@ Partial Class PieceEditorForm
         tlpInformationsPiece.Controls.Add(tlpCreerPieceType, 0, 4)
         tlpInformationsPiece.Controls.Add(lblCreerPieceNbMax, 0, 5)
         tlpInformationsPiece.Controls.Add(nudCreerPieceNbMax, 0, 6)
-        tlpInformationsPiece.Controls.Add(tlpCreerPieceBoutons, 0, 7)
+        tlpInformationsPiece.Controls.Add(tlpCreerPieceBoutons, 0, 9)
+        tlpInformationsPiece.Controls.Add(lblCreerPiecePoids, 0, 7)
+        tlpInformationsPiece.Controls.Add(nudCreerPiecePoids, 0, 8)
         tlpInformationsPiece.Dock = System.Windows.Forms.DockStyle.Fill
         tlpInformationsPiece.Location = New System.Drawing.Point(3, 3)
         tlpInformationsPiece.Name = "tlpInformationsPiece"
-        tlpInformationsPiece.RowCount = 8
-        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F))
-        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F))
-        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F))
-        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F))
-        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F))
-        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F))
-        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F))
-        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F))
-        tlpInformationsPiece.Size = New System.Drawing.Size(301, 737)
-        tlpInformationsPiece.TabIndex = 0
+        tlpInformationsPiece.RowCount = 10
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0075F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.332499F))
+        tlpInformationsPiece.Size = New System.Drawing.Size(301, 877)
+        tlpInformationsPiece.TabIndex = 2
         ' 
         ' lblCreerPieceNom
         ' 
@@ -218,7 +225,7 @@ Partial Class PieceEditorForm
         tlpCreerPieceType.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F))
         tlpCreerPieceType.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F))
         tlpCreerPieceType.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.3333321F))
-        tlpCreerPieceType.Size = New System.Drawing.Size(295, 215)
+        tlpCreerPieceType.Size = New System.Drawing.Size(295, 213)
         tlpCreerPieceType.TabIndex = 4
         ' 
         ' lblCreerPieceLeger
@@ -228,7 +235,7 @@ Partial Class PieceEditorForm
         lblCreerPieceLeger.Font = New System.Drawing.Font("Segoe UI", 27.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
         lblCreerPieceLeger.Location = New System.Drawing.Point(3, 0)
         lblCreerPieceLeger.Name = "lblCreerPieceLeger"
-        lblCreerPieceLeger.Size = New System.Drawing.Size(166, 71)
+        lblCreerPieceLeger.Size = New System.Drawing.Size(166, 70)
         lblCreerPieceLeger.TabIndex = 0
         lblCreerPieceLeger.Text = "Léger"
         lblCreerPieceLeger.TextAlign = Drawing.ContentAlignment.MiddleRight
@@ -238,9 +245,9 @@ Partial Class PieceEditorForm
         lblCreerPieceLourd.AutoSize = True
         lblCreerPieceLourd.Dock = System.Windows.Forms.DockStyle.Fill
         lblCreerPieceLourd.Font = New System.Drawing.Font("Segoe UI", 27.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        lblCreerPieceLourd.Location = New System.Drawing.Point(3, 71)
+        lblCreerPieceLourd.Location = New System.Drawing.Point(3, 70)
         lblCreerPieceLourd.Name = "lblCreerPieceLourd"
-        lblCreerPieceLourd.Size = New System.Drawing.Size(166, 71)
+        lblCreerPieceLourd.Size = New System.Drawing.Size(166, 70)
         lblCreerPieceLourd.TabIndex = 1
         lblCreerPieceLourd.Text = "Lourd"
         lblCreerPieceLourd.TextAlign = Drawing.ContentAlignment.MiddleRight
@@ -250,7 +257,7 @@ Partial Class PieceEditorForm
         lblCreerPieceEtage.AutoSize = True
         lblCreerPieceEtage.Dock = System.Windows.Forms.DockStyle.Fill
         lblCreerPieceEtage.Font = New System.Drawing.Font("Segoe UI", 27.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        lblCreerPieceEtage.Location = New System.Drawing.Point(3, 142)
+        lblCreerPieceEtage.Location = New System.Drawing.Point(3, 140)
         lblCreerPieceEtage.Name = "lblCreerPieceEtage"
         lblCreerPieceEtage.Size = New System.Drawing.Size(166, 73)
         lblCreerPieceEtage.TabIndex = 2
@@ -261,7 +268,7 @@ Partial Class PieceEditorForm
         ' 
         rdoCreerPieceLeger.Checked = True
         rdoCreerPieceLeger.Dock = System.Windows.Forms.DockStyle.Bottom
-        rdoCreerPieceLeger.Location = New System.Drawing.Point(175, 18)
+        rdoCreerPieceLeger.Location = New System.Drawing.Point(175, 17)
         rdoCreerPieceLeger.Name = "rdoCreerPieceLeger"
         rdoCreerPieceLeger.Size = New System.Drawing.Size(117, 50)
         rdoCreerPieceLeger.TabIndex = 3
@@ -271,7 +278,7 @@ Partial Class PieceEditorForm
         ' rdoCreerPieceLourd
         ' 
         rdoCreerPieceLourd.Dock = System.Windows.Forms.DockStyle.Bottom
-        rdoCreerPieceLourd.Location = New System.Drawing.Point(175, 89)
+        rdoCreerPieceLourd.Location = New System.Drawing.Point(175, 87)
         rdoCreerPieceLourd.Name = "rdoCreerPieceLourd"
         rdoCreerPieceLourd.Size = New System.Drawing.Size(117, 50)
         rdoCreerPieceLourd.TabIndex = 4
@@ -280,7 +287,7 @@ Partial Class PieceEditorForm
         ' rdoCreerPieceEtage
         ' 
         rdoCreerPieceEtage.Dock = System.Windows.Forms.DockStyle.Bottom
-        rdoCreerPieceEtage.Location = New System.Drawing.Point(175, 162)
+        rdoCreerPieceEtage.Location = New System.Drawing.Point(175, 160)
         rdoCreerPieceEtage.Name = "rdoCreerPieceEtage"
         rdoCreerPieceEtage.Size = New System.Drawing.Size(117, 50)
         rdoCreerPieceEtage.TabIndex = 5
@@ -291,7 +298,7 @@ Partial Class PieceEditorForm
         lblCreerPieceNbMax.AutoSize = True
         lblCreerPieceNbMax.Dock = System.Windows.Forms.DockStyle.Fill
         lblCreerPieceNbMax.Font = New System.Drawing.Font("Segoe UI", 21.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        lblCreerPieceNbMax.Location = New System.Drawing.Point(3, 513)
+        lblCreerPieceNbMax.Location = New System.Drawing.Point(3, 511)
         lblCreerPieceNbMax.Name = "lblCreerPieceNbMax"
         lblCreerPieceNbMax.Size = New System.Drawing.Size(295, 73)
         lblCreerPieceNbMax.TabIndex = 5
@@ -301,12 +308,12 @@ Partial Class PieceEditorForm
         ' nudCreerPieceNbMax
         ' 
         nudCreerPieceNbMax.Dock = System.Windows.Forms.DockStyle.Fill
-        nudCreerPieceNbMax.Font = New System.Drawing.Font("Segoe UI", 30F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        nudCreerPieceNbMax.Location = New System.Drawing.Point(3, 589)
+        nudCreerPieceNbMax.Font = New System.Drawing.Font("Segoe UI", 24F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        nudCreerPieceNbMax.Location = New System.Drawing.Point(3, 587)
         nudCreerPieceNbMax.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
         nudCreerPieceNbMax.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         nudCreerPieceNbMax.Name = "nudCreerPieceNbMax"
-        nudCreerPieceNbMax.Size = New System.Drawing.Size(295, 61)
+        nudCreerPieceNbMax.Size = New System.Drawing.Size(295, 50)
         nudCreerPieceNbMax.TabIndex = 6
         nudCreerPieceNbMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         nudCreerPieceNbMax.Value = New Decimal(New Integer() {1, 0, 0, 0})
@@ -319,34 +326,58 @@ Partial Class PieceEditorForm
         tlpCreerPieceBoutons.Controls.Add(btnCreerPieceEnregistrer, 0, 0)
         tlpCreerPieceBoutons.Controls.Add(btnCreerPieceAnnuler, 1, 0)
         tlpCreerPieceBoutons.Dock = System.Windows.Forms.DockStyle.Fill
-        tlpCreerPieceBoutons.Location = New System.Drawing.Point(3, 662)
+        tlpCreerPieceBoutons.Location = New System.Drawing.Point(3, 806)
         tlpCreerPieceBoutons.Name = "tlpCreerPieceBoutons"
         tlpCreerPieceBoutons.RowCount = 1
-        tlpCreerPieceBoutons.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F))
-        tlpCreerPieceBoutons.Size = New System.Drawing.Size(295, 72)
+        tlpCreerPieceBoutons.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F))
+        tlpCreerPieceBoutons.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F))
+        tlpCreerPieceBoutons.Size = New System.Drawing.Size(295, 68)
         tlpCreerPieceBoutons.TabIndex = 7
         ' 
         ' btnCreerPieceEnregistrer
         ' 
         btnCreerPieceEnregistrer.Dock = System.Windows.Forms.DockStyle.Fill
-        btnCreerPieceEnregistrer.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        btnCreerPieceEnregistrer.Font = New System.Drawing.Font("Segoe UI", 15F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
         btnCreerPieceEnregistrer.Location = New System.Drawing.Point(3, 3)
         btnCreerPieceEnregistrer.Name = "btnCreerPieceEnregistrer"
-        btnCreerPieceEnregistrer.Size = New System.Drawing.Size(141, 66)
+        btnCreerPieceEnregistrer.Size = New System.Drawing.Size(141, 62)
         btnCreerPieceEnregistrer.TabIndex = 0
-        btnCreerPieceEnregistrer.Text = "Enregistrer"
+        btnCreerPieceEnregistrer.Text = "ENREGISTRER"
         btnCreerPieceEnregistrer.UseVisualStyleBackColor = True
         ' 
         ' btnCreerPieceAnnuler
         ' 
         btnCreerPieceAnnuler.Dock = System.Windows.Forms.DockStyle.Fill
-        btnCreerPieceAnnuler.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        btnCreerPieceAnnuler.Font = New System.Drawing.Font("Segoe UI", 15F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
         btnCreerPieceAnnuler.Location = New System.Drawing.Point(150, 3)
         btnCreerPieceAnnuler.Name = "btnCreerPieceAnnuler"
-        btnCreerPieceAnnuler.Size = New System.Drawing.Size(142, 66)
+        btnCreerPieceAnnuler.Size = New System.Drawing.Size(142, 62)
         btnCreerPieceAnnuler.TabIndex = 1
-        btnCreerPieceAnnuler.Text = "Annuler"
+        btnCreerPieceAnnuler.Text = "ANNULER"
         btnCreerPieceAnnuler.UseVisualStyleBackColor = True
+        ' 
+        ' lblCreerPiecePoids
+        ' 
+        lblCreerPiecePoids.AutoSize = True
+        lblCreerPiecePoids.Dock = System.Windows.Forms.DockStyle.Fill
+        lblCreerPiecePoids.Font = New System.Drawing.Font("Segoe UI", 21.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        lblCreerPiecePoids.Location = New System.Drawing.Point(3, 657)
+        lblCreerPiecePoids.Name = "lblCreerPiecePoids"
+        lblCreerPiecePoids.Size = New System.Drawing.Size(295, 73)
+        lblCreerPiecePoids.TabIndex = 8
+        lblCreerPiecePoids.Text = "Pondération"
+        lblCreerPiecePoids.TextAlign = Drawing.ContentAlignment.BottomCenter
+        ' 
+        ' nudCreerPiecePoids
+        ' 
+        nudCreerPiecePoids.Dock = System.Windows.Forms.DockStyle.Fill
+        nudCreerPiecePoids.Font = New System.Drawing.Font("Segoe UI", 24F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        nudCreerPiecePoids.Location = New System.Drawing.Point(3, 733)
+        nudCreerPiecePoids.Maximum = New Decimal(New Integer() {100000, 0, 0, 0})
+        nudCreerPiecePoids.Name = "nudCreerPiecePoids"
+        nudCreerPiecePoids.Size = New System.Drawing.Size(295, 50)
+        nudCreerPiecePoids.TabIndex = 9
+        nudCreerPiecePoids.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         ' 
         ' pnlCreerPieceGrille
         ' 
@@ -354,15 +385,14 @@ Partial Class PieceEditorForm
         pnlCreerPieceGrille.Dock = System.Windows.Forms.DockStyle.Fill
         pnlCreerPieceGrille.Location = New System.Drawing.Point(310, 3)
         pnlCreerPieceGrille.Name = "pnlCreerPieceGrille"
-        pnlCreerPieceGrille.Size = New System.Drawing.Size(918, 737)
+        pnlCreerPieceGrille.Size = New System.Drawing.Size(918, 877)
         pnlCreerPieceGrille.TabIndex = 1
         ' 
         ' PieceEditorForm
         ' 
         AutoScaleDimensions = New System.Drawing.SizeF(7F, 15F)
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        CancelButton = btnCreerPieceAnnuler
-        ClientSize = New System.Drawing.Size(1231, 743)
+        ClientSize = New System.Drawing.Size(1231, 883)
         Controls.Add(tlpCreationPiece)
         FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Name = "PieceEditorForm"
@@ -381,17 +411,21 @@ Partial Class PieceEditorForm
         tlpCreerPieceType.PerformLayout()
         CType(nudCreerPieceNbMax, ComponentModel.ISupportInitialize).EndInit()
         tlpCreerPieceBoutons.ResumeLayout(False)
+        CType(nudCreerPiecePoids, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub
 
     Friend WithEvents tlpCreationPiece As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents pnlCreerPieceGrille As System.Windows.Forms.Panel
     Friend WithEvents tlpInformationsPiece As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents lblCreerPieceNom As System.Windows.Forms.Label
     Friend WithEvents txtCreerPieceNom As System.Windows.Forms.TextBox
     Friend WithEvents tlpCreerPieceX As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents lblCreerPieceX As System.Windows.Forms.Label
+    Friend WithEvents nudCreerPieceX As System.Windows.Forms.NumericUpDown
     Friend WithEvents tlpCreerPieceY As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents lblCreerPieceY As System.Windows.Forms.Label
+    Friend WithEvents nudCreerPieceY As System.Windows.Forms.NumericUpDown
     Friend WithEvents tlpCreerPieceType As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents lblCreerPieceLeger As System.Windows.Forms.Label
     Friend WithEvents lblCreerPieceLourd As System.Windows.Forms.Label
@@ -399,12 +433,11 @@ Partial Class PieceEditorForm
     Friend WithEvents rdoCreerPieceLeger As System.Windows.Forms.RadioButton
     Friend WithEvents rdoCreerPieceLourd As System.Windows.Forms.RadioButton
     Friend WithEvents rdoCreerPieceEtage As System.Windows.Forms.RadioButton
-    Friend WithEvents nudCreerPieceX As System.Windows.Forms.NumericUpDown
-    Friend WithEvents nudCreerPieceY As System.Windows.Forms.NumericUpDown
     Friend WithEvents lblCreerPieceNbMax As System.Windows.Forms.Label
     Friend WithEvents nudCreerPieceNbMax As System.Windows.Forms.NumericUpDown
-    Friend WithEvents pnlCreerPieceGrille As System.Windows.Forms.Panel
     Friend WithEvents tlpCreerPieceBoutons As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents btnCreerPieceEnregistrer As System.Windows.Forms.Button
     Friend WithEvents btnCreerPieceAnnuler As System.Windows.Forms.Button
+    Friend WithEvents lblCreerPiecePoids As System.Windows.Forms.Label
+    Friend WithEvents nudCreerPiecePoids As System.Windows.Forms.NumericUpDown
 End Class

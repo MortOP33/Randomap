@@ -174,26 +174,35 @@ Public Class MainForm
 
         infoPanel.Dock = DockStyle.Fill
         infoPanel.ColumnCount = 1
-        infoPanel.RowCount = 3
+        infoPanel.RowCount = 4
         infoPanel.Padding = New Padding(10)
 
-        infoPanel.RowStyles.Add(
-        New RowStyle(
-        SizeType.Percent,
-        33.33F))
 
+        ' Répartition équitable des 4 informations
         infoPanel.RowStyles.Add(
         New RowStyle(
-        SizeType.Percent,
-        33.33F))
+            SizeType.Percent,
+            25.0F))
 
         infoPanel.RowStyles.Add(
         New RowStyle(
-        SizeType.Percent,
-        33.33F))
+            SizeType.Percent,
+            25.0F))
+
+        infoPanel.RowStyles.Add(
+        New RowStyle(
+            SizeType.Percent,
+            25.0F))
+
+        infoPanel.RowStyles.Add(
+        New RowStyle(
+            SizeType.Percent,
+            25.0F))
 
 
-        ' --- Nom ---
+        ' =========================================================
+        ' NOM
+        ' =========================================================
 
         Dim lblNom As New Label()
 
@@ -211,7 +220,9 @@ Public Class MainForm
         0)
 
 
-        ' --- Type ---
+        ' =========================================================
+        ' TYPE
+        ' =========================================================
 
         Dim lblType As New Label()
 
@@ -229,7 +240,9 @@ Public Class MainForm
         1)
 
 
-        ' --- Nombre maximum ---
+        ' =========================================================
+        ' NOMBRE MAXIMUM
+        ' =========================================================
 
         Dim lblNb As New Label()
 
@@ -249,6 +262,28 @@ Public Class MainForm
         2)
 
 
+        ' =========================================================
+        ' POIDS
+        ' =========================================================
+
+        Dim lblPoids As New Label()
+
+        lblPoids.Text =
+        $"Poids : {piece.Weight}"
+
+        lblPoids.Dock = DockStyle.Fill
+        lblPoids.TextAlign = ContentAlignment.MiddleCenter
+        lblPoids.Font = New Font(
+        lblPoids.Font.FontFamily,
+        12.0F,
+        FontStyle.Regular)
+
+        infoPanel.Controls.Add(
+        lblPoids,
+        0,
+        3)
+
+
         ' Ajout de la colonne informations
         tlpPiece.Controls.Add(
         infoPanel,
@@ -259,8 +294,8 @@ Public Class MainForm
         ' =========================================================
         ' COLONNE 2 : APERCU
         '
-        ' Pour l'instant : simple Panel gris.
-        ' Il sera remplacé ensuite par TerrainPiecePreview.
+        ' Le TerrainPiecePreview adapte automatiquement
+        ' l'affichage de la pièce à l'espace disponible.
         ' =========================================================
 
         Dim preview As New TerrainPiecePreview()
@@ -289,16 +324,18 @@ Public Class MainForm
 
         actionsPanel.RowStyles.Add(
         New RowStyle(
-        SizeType.Percent,
-        50))
+            SizeType.Percent,
+            50))
 
         actionsPanel.RowStyles.Add(
         New RowStyle(
-        SizeType.Percent,
-        50))
+            SizeType.Percent,
+            50))
 
 
-        ' --- Bouton Modifier ---
+        ' =========================================================
+        ' BOUTON MODIFIER
+        ' =========================================================
 
         Dim btnModifier As New Button()
 
@@ -307,7 +344,9 @@ Public Class MainForm
 
         ' On associe directement la pièce au bouton
         btnModifier.Tag = piece
-        AddHandler btnModifier.Click, AddressOf BtnModifier_Click
+
+        AddHandler btnModifier.Click,
+        AddressOf BtnModifier_Click
 
         actionsPanel.Controls.Add(
         btnModifier,
@@ -315,7 +354,9 @@ Public Class MainForm
         0)
 
 
-        ' --- Bouton Supprimer ---
+        ' =========================================================
+        ' BOUTON SUPPRIMER
+        ' =========================================================
 
         Dim btnSupprimer As New Button()
 
@@ -324,7 +365,9 @@ Public Class MainForm
 
         ' On associe directement la pièce au bouton
         btnSupprimer.Tag = piece
-        AddHandler btnSupprimer.Click, AddressOf BtnSupprimer_Click
+
+        AddHandler btnSupprimer.Click,
+        AddressOf BtnSupprimer_Click
 
         actionsPanel.Controls.Add(
         btnSupprimer,

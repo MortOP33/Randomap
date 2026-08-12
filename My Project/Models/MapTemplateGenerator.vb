@@ -42,49 +42,58 @@
     Private Sub GenerateInsertionZones(generation As MapGeneration)
 
         Dim mapHeight As Integer = generation.Template.HeightCells
+
         Dim mapWidth As Integer = generation.Template.WidthCells
+
+        Dim insertionDepthX As Integer = MapScale.InsertionDepthXCells
+
+        Dim insertionDepthY As Integer = MapScale.InsertionDepthYCells
 
         generation.InsertionZones.Clear()
 
+
         If generation.InsertionAxis = InsertionAxis.X Then
 
-            ' Bande gauche : 6 pouces
+            ' Bande gauche : 6 pouces = 24 cases
             generation.InsertionZones.Add(
-                New InsertionZone With {
-                    .X = 0,
-                    .Y = 0,
-                    .Width = 60,
-                    .Height = mapHeight
-                })
+            New InsertionZone With {
+                .X = 0,
+                .Y = 0,
+                .Width = insertionDepthX,
+                .Height = mapHeight
+            })
 
-            ' Bande droite : 6 pouces
+
+            ' Bande droite : 6 pouces = 24 cases
             generation.InsertionZones.Add(
-                New InsertionZone With {
-                    .X = 0,
-                    .Y = mapWidth - 60,
-                    .Width = 60,
-                    .Height = mapHeight
-                })
+            New InsertionZone With {
+                .X = 0,
+                .Y = mapWidth - insertionDepthX,
+                .Width = insertionDepthX,
+                .Height = mapHeight
+            })
+
 
         Else
 
-            ' Bande haute : 3 pouces
+            ' Bande haute : 3 pouces = 12 cases
             generation.InsertionZones.Add(
-                New InsertionZone With {
-                    .X = 0,
-                    .Y = 0,
-                    .Width = mapWidth,
-                    .Height = 30
-                })
+            New InsertionZone With {
+                .X = 0,
+                .Y = 0,
+                .Width = mapWidth,
+                .Height = insertionDepthY
+            })
 
-            ' Bande basse : 3 pouces
+
+            ' Bande basse : 3 pouces = 12 cases
             generation.InsertionZones.Add(
-                New InsertionZone With {
-                    .X = mapHeight - 30,
-                    .Y = 0,
-                    .Width = mapWidth,
-                    .Height = 30
-                })
+            New InsertionZone With {
+                .X = mapHeight - insertionDepthY,
+                .Y = 0,
+                .Width = mapWidth,
+                .Height = insertionDepthY
+            })
 
         End If
 
@@ -109,22 +118,41 @@
     Private Sub GeneratePureCentreObjectives(generation As MapGeneration)
 
         Dim mapHeight As Integer = generation.Template.HeightCells
+
         Dim mapWidth As Integer = generation.Template.WidthCells
+
         Dim size As Integer = generation.Template.ObjectiveSizeCells
+
+        Dim insertionDepthX As Integer = MapScale.InsertionDepthXCells
+
+        Dim insertionDepthY As Integer = MapScale.InsertionDepthYCells
 
         Dim maxA As Integer
         Dim minA As Integer
 
-        ' Détermination de la plage de A selon l'axe d'insertion.
+
+        ' Détermination de la plage de A
+        ' selon l'axe d'insertion.
+
         If generation.InsertionAxis = InsertionAxis.X Then
 
-            ' Insertion gauche/droite : 6 pouces de profondeur.
-            maxA = (mapWidth \ 2) - 60 - size
+            ' Insertion gauche/droite :
+            ' 6 pouces = 24 cases.
+
+            maxA =
+            (mapWidth \ 2) -
+            insertionDepthX -
+            size
 
         Else
 
-            ' Insertion haut/bas : 3 pouces de profondeur.
-            maxA = (mapHeight \ 2) - 30 - size
+            ' Insertion haut/bas :
+            ' 3 pouces = 12 cases.
+
+            maxA =
+            (mapHeight \ 2) -
+            insertionDepthY -
+            size
 
         End If
 

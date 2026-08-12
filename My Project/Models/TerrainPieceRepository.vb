@@ -89,9 +89,7 @@ Public Class TerrainPieceRepository
 
     End Sub
 
-    Private Function FromData(
-        data As TerrainPieceData
-    ) As TerrainPiece
+    Private Function FromData(data As TerrainPieceData) As TerrainPiece
 
         Dim cells(
             data.X - 1,
@@ -116,6 +114,7 @@ Public Class TerrainPieceRepository
             .X = data.X,
             .Y = data.Y,
             .MaxOccurrences = data.MaxOccurrences,
+            .Weight = data.Weight,
             .Type = data.Type,
             .Cells = cells
         }
