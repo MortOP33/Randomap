@@ -20,6 +20,13 @@ Public Enum GameMode
     Offset
 End Enum
 
+Public Enum PieceRotation
+    Deg0
+    Deg90
+    Deg180
+    Deg270
+End Enum
+
 
 Public Class MapTemplateDefinition
 
@@ -30,7 +37,7 @@ Public Class MapTemplateDefinition
     Public Property Y As Integer
 
     ' Taille des zones d'objectif, en pouces
-    Public Property ObjectiveSize As Integer
+    Public Property ObjectiveSize As Double
 
     ' Dimensions internes, en cases de 0,1 pouce
     Public ReadOnly Property HeightCells As Integer
@@ -47,7 +54,7 @@ Public Class MapTemplateDefinition
 
     Public ReadOnly Property ObjectiveSizeCells As Integer
         Get
-            Return ObjectiveSize * MapScale.CellsPerInch
+            Return CInt(ObjectiveSize * MapScale.CellsPerInch)
         End Get
     End Property
 
@@ -78,6 +85,57 @@ Public Class ObjectiveZone
 
 End Class
 
+Public Class PlacedTerrainPiece
+
+    Public Property Piece As TerrainPiece
+
+    Public Property X As Integer
+
+    Public Property Y As Integer
+
+    Public Property Rotation As PieceRotation
+
+End Class
+
+Public Module MapPieceGeometry
+
+    Public Function GetRotatedCellState(piece As TerrainPiece, row As Integer, column As Integer, rotation As PieceRotation) As TerrainCellState
+
+        Select Case rotation
+
+            Case PieceRotation.Deg0
+
+                Return piece.Cells(
+                    row,
+                    column)
+
+            Case PieceRotation.Deg90
+
+                Return piece.Cells(
+                    piece.X - 1 - column,
+                    row)
+
+            Case PieceRotation.Deg180
+
+                Return piece.Cells(
+                    piece.X - 1 - row,
+                    piece.Y - 1 - column)
+
+            Case PieceRotation.Deg270
+
+                Return piece.Cells(
+                    column,
+                    piece.Y - 1 - row)
+
+            Case Else
+
+                Return TerrainCellState.Empty
+
+        End Select
+
+    End Function
+
+End Module
 
 Public Module MapTemplates
 
@@ -135,30 +193,52 @@ Public Module MapTemplates
         Public Property GameMode As GameMode
 
         ' Paramètres géométriques tirés au sort.
-        ' Toutes les valeurs sont exprimées en cases de 0,1 pouce.
+        ' Toutes les valeurs géométriques internes sont
+        ' exprimées en cases de 1/4 de pouce.
 
         ' Distance entre la médiane et le bord intérieur
         ' des objectifs secondaires.
         Public Property A As Integer
 
         ' Distance signée entre les bords des objectifs.
-        '
-        ' B > 0  : espace entre les objectifs
-        ' B = 0  : les objectifs se touchent
-        ' B < 0  : les objectifs se recouvrent sur leur axe
-        '
-        ' En mode PurCentre, la même valeur est appliquée
-        ' symétriquement au-dessus et au-dessous du centre.
         Public Property B As Integer
 
         ' Décalage du carré central en mode Offset.
         Public Property Z As Integer
+
+
+        ' =========================================================
+        ' ZONES ET PIECES
+        ' =========================================================
 
         ' Zones d'insertion
         Public Property InsertionZones As New List(Of InsertionZone)
 
         ' Zones d'objectif
         Public Property ObjectiveZones As New List(Of ObjectiveZone)
+
+        ' Liste des pièces effectivement placées
+        Public Property PlacedPieces As New List(Of PlacedTerrainPiece)
+
+        ' Grille interne des cases occupées
+        Public Property OccupiedCells As Boolean(,)
+
+
+        ' =========================================================
+        ' CONSTRUCTEUR
+        ' =========================================================
+
+        Public Sub New(template As MapTemplateDefinition)
+
+            Me.Template = template
+
+            Me.OccupiedCells =
+            New Boolean(
+                template.HeightCells - 1,
+                template.WidthCells - 1
+            ) {}
+
+        End Sub
 
     End Class
 

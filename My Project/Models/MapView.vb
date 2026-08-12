@@ -41,6 +41,7 @@ Public Class MapView
 
         DrawInsertionZones(g, mapRectangle)
         DrawObjectiveZones(g, mapRectangle)
+        DrawPlacedPieces(g, mapRectangle)
 
     End Sub
 
@@ -120,6 +121,158 @@ Public Class MapView
         zone.Size * scaleY)
 
     End Function
+
+    Private Sub DrawPlacedPieces(g As Graphics, mapRectangle As RectangleF)
+
+        If _generation.PlacedPieces Is Nothing Then
+            Return
+        End If
+
+        For Each placedPiece As PlacedTerrainPiece In _generation.PlacedPieces
+            DrawPlacedPiece(g, mapRectangle, placedPiece)
+        Next
+
+    End Sub
+
+    Private Sub DrawPlacedPiece(g As Graphics, mapRectangle As RectangleF, placedPiece As PlacedTerrainPiece)
+
+        Dim piece As TerrainPiece =
+        placedPiece.Piece
+
+        Dim mapWidth As Integer =
+        _generation.Template.WidthCells
+
+        Dim mapHeight As Integer =
+        _generation.Template.HeightCells
+
+        Dim scaleX As Single =
+        mapRectangle.Width / mapWidth
+
+        Dim scaleY As Single =
+        mapRectangle.Height / mapHeight
+
+
+        ' =========================================================
+        ' PARCOURS DES CELLULES DE LA PIECE
+        ' =========================================================
+
+        Dim rotation As PieceRotation = placedPiece.Rotation
+        Dim rotatedHeight As Integer
+        Dim rotatedWidth As Integer
+        If rotation = PieceRotation.Deg0 OrElse rotation = PieceRotation.Deg180 Then
+            rotatedHeight = piece.X
+            rotatedWidth = piece.Y
+        Else
+            rotatedHeight = piece.Y
+            rotatedWidth = piece.X
+        End If
+
+        For row As Integer = 0 To rotatedHeight - 1
+
+            For column As Integer = 0 To rotatedWidth - 1
+
+                Dim state As TerrainCellState = MapPieceGeometry.GetRotatedCellState(piece, row, column, rotation)
+
+                ' -------------------------------------------------
+                ' Les cellules vides ne sont pas affichées.
+                ' -------------------------------------------------
+
+                If state = TerrainCellState.Empty Then
+                    Continue For
+                End If
+
+
+                ' -------------------------------------------------
+                ' Position réelle sur la carte
+                ' -------------------------------------------------
+
+                Dim mapX As Integer =
+                placedPiece.X + row
+
+                Dim mapY As Integer =
+                placedPiece.Y + column
+
+
+                ' -------------------------------------------------
+                ' Sécurité : les cellules actives doivent être
+                ' dans la carte.
+                ' -------------------------------------------------
+
+                If mapX < 0 OrElse
+               mapX >= mapHeight OrElse
+               mapY < 0 OrElse
+               mapY >= mapWidth Then
+
+                    Continue For
+
+                End If
+
+
+                ' -------------------------------------------------
+                ' Conversion vers l'écran
+                ' -------------------------------------------------
+
+                Dim screenX As Single =
+                mapRectangle.X +
+                mapY * scaleX
+
+                Dim screenY As Single =
+                mapRectangle.Y +
+                mapX * scaleY
+
+
+                Dim rectangle As New RectangleF(
+                screenX,
+                screenY,
+                scaleX,
+                scaleY)
+
+
+                ' -------------------------------------------------
+                ' Couleur
+                ' -------------------------------------------------
+
+                ' =========================================================
+                ' RENDU SELON LE TYPE DE PIECE
+                ' =========================================================
+
+                If piece.Type = TerrainPieceType.ETAGE Then
+
+                    Using brush As New HatchBrush(HatchStyle.ForwardDiagonal, Color.DimGray, Color.LightGray)
+                        g.FillRectangle(brush, rectangle)
+                    End Using
+
+                Else
+
+                    Dim cellColor As Color
+
+                    Select Case piece.Type
+
+                        Case TerrainPieceType.LEGER
+
+                            cellColor = Color.LightGray
+
+                        Case TerrainPieceType.LOURD
+
+                            cellColor = Color.DimGray
+
+                        Case Else
+
+                            cellColor = Color.DimGray
+
+                    End Select
+
+                    Using brush As New SolidBrush(cellColor)
+                        g.FillRectangle(brush, rectangle)
+                    End Using
+
+                End If
+
+            Next
+
+        Next
+
+    End Sub
 
     <Browsable(False)>
     <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>

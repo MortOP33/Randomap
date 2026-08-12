@@ -1,17 +1,48 @@
-﻿Public Module MapTemplateGenerator
+﻿Imports System.Windows.Forms
+
+Public Module MapTemplateGenerator
 
     Private Const MaxAttempts As Integer = 1000
 
     Public Function Generate(template As MapTemplateDefinition) As MapGeneration
 
-        Dim generation As New MapGeneration With {
-            .Template = template,
+        Dim generation As New MapGeneration(template) With {
             .InsertionAxis = RollInsertionAxis(),
             .GameMode = RollGameMode()
         }
 
         GenerateInsertionZones(generation)
         GenerateObjectiveZones(generation)
+
+        '----------------------
+        '-------TEST-----------
+        '----------------------
+        Dim repository As New TerrainPieceRepository()
+
+        Dim pieces As List(Of TerrainPiece) = repository.Load()
+
+
+        If pieces.Count > 0 Then
+
+            Dim randomIndex As Integer =
+        Random.Shared.Next(
+            0,
+            pieces.Count)
+
+            Dim testPiece As TerrainPiece =
+        pieces(randomIndex)
+
+
+            Dim placer As New MapPiecePlacer()
+
+            placer.TryPlacePiece(
+        generation,
+        testPiece)
+
+        End If
+        '-------------------
+        '-------------------
+        '-------------------
 
         Return generation
 
