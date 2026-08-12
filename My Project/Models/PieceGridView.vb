@@ -11,6 +11,11 @@ Public Class PieceGridView
 
     Private _cells(,) As TerrainCellState = New TerrainCellState(0, 0) {}
 
+    Private _isDrawing As Boolean = False
+    Private _drawingButton As MouseButtons = MouseButtons.None
+    Private _drawingState As TerrainCellState = TerrainCellState.Empty
+    Private _lastDrawingCell As Point? = Nothing
+
     Public Sub New()
 
         SetStyle(
@@ -248,5 +253,267 @@ Public Class PieceGridView
         End Using
 
     End Sub
+
+    Private Function GetCellAt(location As Point) As Point?
+
+        Dim gridRectangle As RectangleF =
+            GetGridRectangle()
+
+        If gridRectangle.IsEmpty Then
+            Return Nothing
+        End If
+
+        If Not gridRectangle.Contains(location) Then
+            Return Nothing
+        End If
+
+        Dim cellWidth As Single =
+            gridRectangle.Width / _columns
+
+        Dim cellHeight As Single =
+            gridRectangle.Height / _rows
+
+        Dim column As Integer =
+            CInt(Math.Floor(
+                (location.X - gridRectangle.X) / cellWidth))
+
+        Dim row As Integer =
+            CInt(Math.Floor(
+                (location.Y - gridRectangle.Y) / cellHeight))
+
+        If row < 0 OrElse row >= _rows Then
+            Return Nothing
+        End If
+
+        If column < 0 OrElse column >= _columns Then
+            Return Nothing
+        End If
+
+        Return New Point(column, row)
+
+    End Function
+
+    Private Sub SetCellState(cell As Point, state As TerrainCellState)
+
+        Dim column As Integer = cell.X
+        Dim row As Integer = cell.Y
+
+        If row < 0 OrElse row >= _rows Then
+            Return
+        End If
+
+        If column < 0 OrElse column >= _columns Then
+            Return
+        End If
+
+        If _cells(row, column) = state Then
+            Return
+        End If
+
+        _cells(row, column) = state
+
+        Invalidate()
+
+    End Sub
+
+    Public Sub SetCells(cells As TerrainCellState(,))
+
+        If cells Is Nothing Then
+            Return
+        End If
+
+        Dim rows As Integer =
+        cells.GetLength(0)
+
+        Dim columns As Integer =
+        cells.GetLength(1)
+
+        Me.Rows = rows
+        Me.Columns = columns
+
+        For row As Integer = 0 To rows - 1
+
+            For column As Integer = 0 To columns - 1
+
+                _cells(row, column) =
+                cells(row, column)
+
+            Next
+
+        Next
+
+        Invalidate()
+
+    End Sub
+
+    Private Function GetNextCellState(currentState As TerrainCellState, button As MouseButtons) As TerrainCellState
+
+        If button = MouseButtons.Left Then
+
+            Select Case currentState
+
+                Case TerrainCellState.Empty
+                    Return TerrainCellState.Occupied
+
+                Case TerrainCellState.Occupied
+                    Return TerrainCellState.Empty
+
+                Case TerrainCellState.Connection
+                    Return TerrainCellState.Occupied
+
+                Case Else
+                    Return TerrainCellState.Empty
+
+            End Select
+
+        End If
+
+        If button = MouseButtons.Right Then
+
+            Select Case currentState
+
+                Case TerrainCellState.Empty
+                    Return TerrainCellState.Connection
+
+                Case TerrainCellState.Occupied
+                    Return TerrainCellState.Connection
+
+                Case TerrainCellState.Connection
+                    Return TerrainCellState.Empty
+
+                Case Else
+                    Return TerrainCellState.Empty
+
+            End Select
+
+        End If
+
+        Return currentState
+
+    End Function
+
+    Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+
+        MyBase.OnMouseDown(e)
+
+        If e.Button <> MouseButtons.Left AndAlso
+       e.Button <> MouseButtons.Right Then
+
+            Return
+        End If
+
+        Dim cell As Point? =
+        GetCellAt(e.Location)
+
+        If Not cell.HasValue Then
+            Return
+        End If
+
+        ' Début d'un nouveau geste
+        _isDrawing = True
+        _drawingButton = e.Button
+
+        Dim currentState As TerrainCellState =
+        _cells(
+            cell.Value.Y,
+            cell.Value.X)
+
+        ' Le premier clic détermine le pinceau
+        _drawingState =
+        GetNextCellState(
+            currentState,
+            _drawingButton)
+
+        ' Appliquer immédiatement le pinceau
+        SetCellState(
+        cell.Value,
+        _drawingState)
+
+        ' Mémoriser la dernière cellule traversée
+        _lastDrawingCell = cell.Value
+
+    End Sub
+
+    Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
+
+        MyBase.OnMouseMove(e)
+
+        If Not _isDrawing Then
+            Return
+        End If
+
+        Dim cell As Point? =
+        GetCellAt(e.Location)
+
+        If Not cell.HasValue Then
+            Return
+        End If
+
+        ' La souris est toujours dans la même cellule
+        If _lastDrawingCell.HasValue AndAlso
+       _lastDrawingCell.Value = cell.Value Then
+
+            Return
+        End If
+
+        ' Nouvelle cellule :
+        ' on applique le même état que celui déterminé
+        ' par le clic initial.
+        SetCellState(
+        cell.Value,
+        _drawingState)
+
+        _lastDrawingCell = cell.Value
+
+    End Sub
+
+    Protected Overrides Sub OnMouseUp(e As MouseEventArgs)
+
+        MyBase.OnMouseUp(e)
+
+        If e.Button <> MouseButtons.Left AndAlso
+       e.Button <> MouseButtons.Right Then
+
+            Return
+        End If
+
+        _isDrawing = False
+        _drawingButton = MouseButtons.None
+        _drawingState = TerrainCellState.Empty
+        _lastDrawingCell = Nothing
+
+    End Sub
+
+    Private Sub ApplyDrawingToCell(cell As Point)
+
+        Dim currentState As TerrainCellState = _cells(cell.Y, cell.X)
+
+        Dim newState As TerrainCellState = GetNextCellState(currentState, _drawingButton)
+
+        SetCellState(cell, newState)
+
+    End Sub
+
+    Public Function GetCellsCopy() As TerrainCellState(,)
+
+        Dim result(
+            _rows - 1,
+            _columns - 1
+        ) As TerrainCellState
+
+        For row As Integer = 0 To _rows - 1
+
+            For column As Integer = 0 To _columns - 1
+
+                result(row, column) =
+                    _cells(row, column)
+
+            Next
+
+        Next
+
+        Return result
+
+    End Function
 
 End Class
