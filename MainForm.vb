@@ -22,8 +22,10 @@ Public Class MainForm
     Private Sub btnGenerer_Click(sender As Object, e As EventArgs) Handles btnGenerer.Click
 
         Dim selectedTemplate As MapTemplate = GetSelectedTemplate()
+
         Dim definition As MapTemplateDefinition = MapTemplates.GetDefinition(selectedTemplate)
-        Dim generation As MapGeneration = MapTemplateGenerator.Generate(definition)
+
+        Dim generation As MapGeneration = MapTemplateGenerator.Generate(definition, CInt(nudPoidsMax.Value))
 
         mapView.Generation = generation
 

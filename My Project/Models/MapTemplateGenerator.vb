@@ -4,7 +4,7 @@ Public Module MapTemplateGenerator
 
     Private Const MaxAttempts As Integer = 1000
 
-    Public Function Generate(template As MapTemplateDefinition) As MapGeneration
+    Public Function Generate(template As MapTemplateDefinition, targetWeight As Integer) As MapGeneration
 
         Dim generation As New MapGeneration(template) With {
             .InsertionAxis = RollInsertionAxis(),
@@ -14,40 +14,262 @@ Public Module MapTemplateGenerator
         GenerateInsertionZones(generation)
         GenerateObjectiveZones(generation)
 
-        '----------------------
-        '-------TEST-----------
-        '----------------------
-        Dim repository As New TerrainPieceRepository()
-
-        Dim pieces As List(Of TerrainPiece) = repository.Load()
-
-
-        If pieces.Count > 0 Then
-
-            Dim randomIndex As Integer =
-        Random.Shared.Next(
-            0,
-            pieces.Count)
-
-            Dim testPiece As TerrainPiece =
-        pieces(randomIndex)
-
-
-            Dim placer As New MapPiecePlacer()
-
-            placer.TryPlacePiece(
-        generation,
-        testPiece)
-
+        Dim success As Boolean = GenerateTerrainPieces(generation, targetWeight)
+        If Not success Then
+            Return generation
         End If
-        '-------------------
-        '-------------------
-        '-------------------
 
         Return generation
 
     End Function
 
+    ' =========================================================
+    ' GENERATION DES PIECES DE DECOR
+    ' =========================================================
+
+    Private Function GenerateTerrainPieces(generation As MapGeneration, targetWeight As Integer) As Boolean
+
+        Dim repository As New TerrainPieceRepository()
+
+        Dim pieces As List(Of TerrainPiece) = repository.Load()
+
+
+        ' ---------------------------------------------------------
+        ' Aucun décor demandé
+        ' ---------------------------------------------------------
+
+        If targetWeight <= 0 Then
+
+            Return True
+
+        End If
+
+
+        ' ---------------------------------------------------------
+        ' Base complètement vide
+        ' ---------------------------------------------------------
+
+        If pieces.Count = 0 Then
+
+            MessageBox.Show(
+            "La base de pièces est vide. " &
+            "Impossible d'atteindre la pondération demandée.",
+            "Génération de la carte",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning)
+
+            Return False
+
+        End If
+
+
+        ' ---------------------------------------------------------
+        ' Copie temporaire des occurrences disponibles.
+        '
+        ' On NE MODIFIE PAS MaxOccurrences dans TerrainPiece.
+        ' ---------------------------------------------------------
+
+        Dim remainingOccurrences As New Dictionary(Of TerrainPiece, Integer)
+
+
+        For Each piece As TerrainPiece In pieces
+
+            remainingOccurrences(piece) = piece.MaxOccurrences
+
+        Next
+
+
+        Dim currentWeight As Integer = 0
+
+
+        ' ---------------------------------------------------------
+        ' Moteur principal
+        ' ---------------------------------------------------------
+
+        While currentWeight < targetWeight
+
+
+            ' -----------------------------------------------------
+            ' Construction du poids disponible.
+            ' -----------------------------------------------------
+
+            Dim availableWeight As Integer = 0
+
+            For Each piece As TerrainPiece In pieces
+
+                If remainingOccurrences(piece) <= 0 Then
+                    Continue For
+                End If
+
+                If piece.Weight <= 0 Then
+                    Continue For
+                End If
+
+                availableWeight += piece.Weight
+
+            Next
+
+
+            ' -----------------------------------------------------
+            ' Plus aucune pièce sélectionnable.
+            ' -----------------------------------------------------
+
+            If availableWeight <= 0 Then
+
+                MessageBox.Show(
+                "La base de pièces a été épuisée " &
+                "avant d'atteindre la pondération demandée." &
+                Environment.NewLine &
+                Environment.NewLine &
+                $"Pondération demandée : {targetWeight}" &
+                Environment.NewLine &
+                $"Pondération obtenue : {currentWeight}",
+                "Génération incomplète",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
+                Return False
+
+            End If
+
+
+            ' -----------------------------------------------------
+            ' Tirage pondéré d'une pièce
+            ' -----------------------------------------------------
+
+            Dim selectedPiece As TerrainPiece = SelectWeightedPiece(pieces, remainingOccurrences)
+
+
+            If selectedPiece Is Nothing Then
+
+                MessageBox.Show(
+                "Impossible de sélectionner une pièce " &
+                "pour poursuivre la génération.",
+                "Génération interrompue",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
+                Return False
+
+            End If
+
+
+            ' -----------------------------------------------------
+            ' La pièce sort du pool pour UNE occurrence.
+            ' -----------------------------------------------------
+
+            remainingOccurrences(selectedPiece) -= 1
+
+
+            ' -----------------------------------------------------
+            ' Tentative de placement
+            ' -----------------------------------------------------
+
+            Dim placer As New MapPiecePlacer()
+
+            Dim placed As Boolean = placer.TryPlacePiece(generation, selectedPiece)
+
+
+            If Not placed Then
+
+                MessageBox.Show(
+                $"La pièce « {selectedPiece.Name} » " &
+                "n'a pas pu être placée sur la carte." &
+                Environment.NewLine &
+                Environment.NewLine &
+                "Le nombre de décors est probablement trop " &
+                "important ou le réseau est trop dense.",
+                "Génération interrompue",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
+                Return False
+
+            End If
+
+
+            ' -----------------------------------------------------
+            ' Placement réussi : ajout du poids.
+            ' -----------------------------------------------------
+
+            currentWeight += selectedPiece.Weight
+
+        End While
+
+        Return True
+
+    End Function
+
+    ' =========================================================
+    ' TIRAGE PONDERE D'UNE PIECE
+    ' =========================================================
+
+    Private Function SelectWeightedPiece(pieces As List(Of TerrainPiece), remainingOccurrences As Dictionary(Of TerrainPiece, Integer)) As TerrainPiece
+
+        Dim totalWeight As Integer = 0
+
+
+        ' ---------------------------------------------------------
+        ' Calcul du poids total disponible
+        ' ---------------------------------------------------------
+
+        For Each piece As TerrainPiece In pieces
+
+            If remainingOccurrences(piece) <= 0 Then
+                Continue For
+            End If
+
+            If piece.Weight <= 0 Then
+                Continue For
+            End If
+
+            totalWeight += piece.Weight
+
+        Next
+
+        If totalWeight <= 0 Then
+
+            Return Nothing
+
+        End If
+
+
+        ' ---------------------------------------------------------
+        ' Tirage d'un nombre dans la plage pondérée.
+        ' ---------------------------------------------------------
+
+        Dim roll As Integer = Random.Shared.Next(1, totalWeight + 1)
+
+        Dim cumulativeWeight As Integer = 0
+
+
+        ' ---------------------------------------------------------
+        ' Recherche de l'intervalle correspondant au tirage.
+        ' ---------------------------------------------------------
+
+        For Each piece As TerrainPiece In pieces
+
+            If remainingOccurrences(piece) <= 0 Then
+                Continue For
+            End If
+
+            If piece.Weight <= 0 Then
+                Continue For
+            End If
+
+            cumulativeWeight += piece.Weight
+
+            If roll <= cumulativeWeight Then
+
+                Return piece
+
+            End If
+
+        Next
+
+        Return Nothing
+
+    End Function
 
     Private Function RollInsertionAxis() As InsertionAxis
 

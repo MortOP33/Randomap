@@ -8,12 +8,10 @@ Public Enum MapTemplate
     Geant
 End Enum
 
-
 Public Enum InsertionAxis
     X
     Y
 End Enum
-
 
 Public Enum GameMode
     PurCentre
