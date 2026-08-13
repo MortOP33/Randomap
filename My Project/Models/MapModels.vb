@@ -2,6 +2,8 @@
 ' Modèles utilisés pour la génération des cartes de Randomap
 ' ============================================================
 
+Imports System.Drawing
+
 Public Enum MapTemplate
     Standard
     Grand
@@ -223,6 +225,9 @@ Public Module MapTemplates
 
         ' Grille interne des cases occupées
         Public Property OccupiedCells As Boolean(,)
+
+        ' Positions des équipements sur la carte.
+        Public Property EquipmentPositions As New List(Of Point)
 
 
         ' =========================================================

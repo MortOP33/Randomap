@@ -7,6 +7,8 @@ Public Class MainForm
 
     Private ReadOnly _terrainPieces As New List(Of TerrainPiece)
 
+    Private _currentGeneration As MapGeneration
+
     Public Sub New()
 
         InitializeComponent()
@@ -18,6 +20,8 @@ Public Class MainForm
         lblValeurDensite.Text = $"{trkDensite.Value}%"
 
         UpdatePieceTypeProbabilities()
+
+        UpdateEquipmentControls()
 
         RefreshGestionBDD()
 
@@ -115,6 +119,32 @@ Public Class MainForm
 
     End Function
 
+    Private Sub nudEquipements_ValueChanged(sender As Object, e As EventArgs) Handles nudEquipements.ValueChanged
+
+        If nudEquipements.Value < 4 Then
+            nudEquipements.Value = 4
+        ElseIf nudEquipements.Value Mod 2 <> 0 Then
+            nudEquipements.Value -= 1
+        End If
+
+    End Sub
+
+    Private Sub chkEquipements_CheckedChanged(sender As Object, e As EventArgs) Handles chkEquipements.CheckedChanged
+
+        UpdateEquipmentControls()
+
+    End Sub
+
+    Private Sub UpdateEquipmentControls()
+
+        Dim equipmentEnabled As Boolean = chkEquipements.Checked
+
+        nudEquipements.Enabled = equipmentEnabled
+
+        btnGenererEquipements.Enabled = equipmentEnabled AndAlso _currentGeneration IsNot Nothing
+
+    End Sub
+
     Private Sub btnGenerer_Click(sender As Object, e As EventArgs) Handles btnGenerer.Click
 
         Dim selectedTemplate As MapTemplate = GetSelectedTemplate()
@@ -136,8 +166,62 @@ Public Class MainForm
 
         Dim generation As MapGeneration = MapTemplateGenerator.Generate(definition, CInt(nudPoidsMax.Value), CInt(trkDensite.Value), weightLeger, weightLourd, weightEtage)
 
+        _currentGeneration = generation
 
         mapView.Generation = generation
+
+        ' ---------------------------------------------------------
+        ' Si les équipements sont activés, ils sont immédiatement
+        ' tirés sur cette nouvelle carte.
+        ' ---------------------------------------------------------
+
+        If chkEquipements.Checked Then
+
+            GenerateEquipmentsForCurrentMap()
+
+        End If
+
+        UpdateEquipmentControls()
+
+    End Sub
+
+    Private Sub GenerateEquipmentsForCurrentMap()
+
+        If Not chkEquipements.Checked Then
+            Return
+        End If
+        If _currentGeneration Is Nothing Then
+            Return
+        End If
+
+
+        Dim success As Boolean =
+        MapEquipmentPlacer.GenerateEquipmentPositions(
+            _currentGeneration,
+            CInt(nudEquipements.Value))
+
+
+        If Not success Then
+
+            MessageBox.Show(
+            "Impossible de placer tous les équipements " &
+            "sur les cases disponibles de la carte.",
+            "Génération des équipements",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning)
+
+            Return
+
+        End If
+
+
+        mapView.Generation = _currentGeneration
+
+    End Sub
+
+    Private Sub btnGenererEquipements_Click(sender As Object, e As EventArgs) Handles btnGenererEquipements.Click
+
+        GenerateEquipmentsForCurrentMap()
 
     End Sub
 

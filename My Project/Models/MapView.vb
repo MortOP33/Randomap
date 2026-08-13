@@ -42,6 +42,7 @@ Public Class MapView
         DrawInsertionZones(g, mapRectangle)
         DrawObjectiveZones(g, mapRectangle)
         DrawPlacedPieces(g, mapRectangle)
+        DrawEquipmentPositions(g, mapRectangle)
 
     End Sub
 
@@ -271,6 +272,68 @@ Public Class MapView
             Next
 
         Next
+
+    End Sub
+
+    Private Sub DrawEquipmentPositions(g As Graphics, mapRectangle As RectangleF)
+
+        If _generation.EquipmentPositions Is Nothing Then
+            Return
+        End If
+
+        Dim mapWidth As Integer = _generation.Template.WidthCells
+        Dim mapHeight As Integer = _generation.Template.HeightCells
+
+        Dim scaleX As Single = mapRectangle.Width / mapWidth
+        Dim scaleY As Single = mapRectangle.Height / mapHeight
+
+
+        ' =========================================================
+        ' DESSIN DES EQUIPEMENTS
+        ' =========================================================
+
+        Using brush As New SolidBrush(Color.Red)
+
+            For Each position As Point In _generation.EquipmentPositions
+
+                Dim mapX As Integer = position.X
+                Dim mapY As Integer = position.Y
+
+
+                ' -------------------------------------------------
+                ' Sécurité
+                ' -------------------------------------------------
+
+                If mapX < 0 OrElse
+                    mapX >= mapHeight OrElse
+                    mapY < 0 OrElse
+                    mapY >= mapWidth Then
+
+                    Continue For
+
+                End If
+
+
+                ' -------------------------------------------------
+                ' Conversion carte → écran
+                ' -------------------------------------------------
+
+                Dim screenX As Single =
+                mapRectangle.X +
+                mapY * scaleX
+
+                Dim screenY As Single =
+                mapRectangle.Y +
+                mapX * scaleY
+
+
+                Dim rectangle As New RectangleF(screenX, screenY, scaleX, scaleY)
+
+                g.FillRectangle(brush, rectangle)
+
+            Next
+
+        End Using
 
     End Sub
 

@@ -34,16 +34,19 @@ Partial Class MainForm
         rdoGrand = New System.Windows.Forms.RadioButton()
         rdoGeant = New System.Windows.Forms.RadioButton()
         tlpParametresGeneraux = New System.Windows.Forms.TableLayoutPanel()
-        tlpPoids = New System.Windows.Forms.TableLayoutPanel()
+        tlpPoidsEquipements = New System.Windows.Forms.TableLayoutPanel()
         Label3 = New System.Windows.Forms.Label()
         nudPoidsMax = New System.Windows.Forms.NumericUpDown()
+        Label9 = New System.Windows.Forms.Label()
+        chkEquipements = New System.Windows.Forms.CheckBox()
+        nudEquipements = New System.Windows.Forms.NumericUpDown()
         tlpDensite = New System.Windows.Forms.TableLayoutPanel()
         Label4 = New System.Windows.Forms.Label()
         trkDensite = New System.Windows.Forms.TrackBar()
         lblValeurDensite = New System.Windows.Forms.Label()
         tlpGenerer = New System.Windows.Forms.TableLayoutPanel()
         btnGenerer = New System.Windows.Forms.Button()
-        chkDetail = New System.Windows.Forms.CheckBox()
+        btnGenererEquipements = New System.Windows.Forms.Button()
         tlpRepartition = New System.Windows.Forms.TableLayoutPanel()
         Label5 = New System.Windows.Forms.Label()
         Label6 = New System.Windows.Forms.Label()
@@ -65,8 +68,9 @@ Partial Class MainForm
         tlpParametres.SuspendLayout()
         tlpDimensions.SuspendLayout()
         tlpParametresGeneraux.SuspendLayout()
-        tlpPoids.SuspendLayout()
+        tlpPoidsEquipements.SuspendLayout()
         CType(nudPoidsMax, ComponentModel.ISupportInitialize).BeginInit()
+        CType(nudEquipements, ComponentModel.ISupportInitialize).BeginInit()
         tlpDensite.SuspendLayout()
         CType(trkDensite, ComponentModel.ISupportInitialize).BeginInit()
         tlpGenerer.SuspendLayout()
@@ -230,7 +234,7 @@ Partial Class MainForm
         ' 
         tlpParametresGeneraux.ColumnCount = 1
         tlpParametresGeneraux.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F))
-        tlpParametresGeneraux.Controls.Add(tlpPoids, 0, 0)
+        tlpParametresGeneraux.Controls.Add(tlpPoidsEquipements, 0, 0)
         tlpParametresGeneraux.Controls.Add(tlpDensite, 0, 1)
         tlpParametresGeneraux.Controls.Add(tlpGenerer, 0, 2)
         tlpParametresGeneraux.Dock = System.Windows.Forms.DockStyle.Fill
@@ -243,45 +247,88 @@ Partial Class MainForm
         tlpParametresGeneraux.Size = New System.Drawing.Size(471, 165)
         tlpParametresGeneraux.TabIndex = 1
         ' 
-        ' tlpPoids
+        ' tlpPoidsEquipements
         ' 
-        tlpPoids.ColumnCount = 2
-        tlpPoids.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F))
-        tlpPoids.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F))
-        tlpPoids.Controls.Add(Label3, 0, 0)
-        tlpPoids.Controls.Add(nudPoidsMax, 1, 0)
-        tlpPoids.Dock = System.Windows.Forms.DockStyle.Fill
-        tlpPoids.Location = New System.Drawing.Point(3, 3)
-        tlpPoids.Name = "tlpPoids"
-        tlpPoids.RowCount = 1
-        tlpPoids.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F))
-        tlpPoids.Size = New System.Drawing.Size(465, 43)
-        tlpPoids.TabIndex = 0
+        tlpPoidsEquipements.ColumnCount = 5
+        tlpPoidsEquipements.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F))
+        tlpPoidsEquipements.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F))
+        tlpPoidsEquipements.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F))
+        tlpPoidsEquipements.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F))
+        tlpPoidsEquipements.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F))
+        tlpPoidsEquipements.Controls.Add(Label3, 0, 0)
+        tlpPoidsEquipements.Controls.Add(nudPoidsMax, 1, 0)
+        tlpPoidsEquipements.Controls.Add(Label9, 2, 0)
+        tlpPoidsEquipements.Controls.Add(chkEquipements, 4, 0)
+        tlpPoidsEquipements.Controls.Add(nudEquipements, 3, 0)
+        tlpPoidsEquipements.Dock = System.Windows.Forms.DockStyle.Fill
+        tlpPoidsEquipements.Location = New System.Drawing.Point(3, 3)
+        tlpPoidsEquipements.Name = "tlpPoidsEquipements"
+        tlpPoidsEquipements.RowCount = 1
+        tlpPoidsEquipements.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F))
+        tlpPoidsEquipements.Size = New System.Drawing.Size(465, 43)
+        tlpPoidsEquipements.TabIndex = 0
         ' 
         ' Label3
         ' 
-        Label3.Anchor = System.Windows.Forms.AnchorStyles.None
         Label3.AutoSize = True
+        Label3.Dock = System.Windows.Forms.DockStyle.Fill
         Label3.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        Label3.Location = New System.Drawing.Point(13, 6)
+        Label3.Location = New System.Drawing.Point(3, 0)
         Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(112, 30)
+        Label3.Size = New System.Drawing.Size(83, 43)
         Label3.TabIndex = 0
-        Label3.Text = "Poids max."
+        Label3.Text = "Poids"
         Label3.TextAlign = Drawing.ContentAlignment.MiddleRight
         ' 
         ' nudPoidsMax
         ' 
         nudPoidsMax.Anchor = System.Windows.Forms.AnchorStyles.None
         nudPoidsMax.Font = New System.Drawing.Font("Segoe UI", 18F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        nudPoidsMax.Location = New System.Drawing.Point(142, 3)
+        nudPoidsMax.Location = New System.Drawing.Point(92, 3)
         nudPoidsMax.Maximum = New Decimal(New Integer() {1000000, 0, 0, 0})
         nudPoidsMax.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         nudPoidsMax.Name = "nudPoidsMax"
-        nudPoidsMax.Size = New System.Drawing.Size(320, 39)
+        nudPoidsMax.Size = New System.Drawing.Size(83, 39)
         nudPoidsMax.TabIndex = 1
         nudPoidsMax.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         nudPoidsMax.Value = New Decimal(New Integer() {100, 0, 0, 0})
+        ' 
+        ' Label9
+        ' 
+        Label9.AutoSize = True
+        Label9.Dock = System.Windows.Forms.DockStyle.Fill
+        Label9.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        Label9.Location = New System.Drawing.Point(181, 0)
+        Label9.Name = "Label9"
+        Label9.Size = New System.Drawing.Size(172, 43)
+        Label9.TabIndex = 2
+        Label9.Text = "Equipements"
+        Label9.TextAlign = Drawing.ContentAlignment.MiddleRight
+        ' 
+        ' chkEquipements
+        ' 
+        chkEquipements.Anchor = System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right
+        chkEquipements.AutoSize = True
+        chkEquipements.Location = New System.Drawing.Point(448, 3)
+        chkEquipements.Name = "chkEquipements"
+        chkEquipements.Size = New System.Drawing.Size(14, 37)
+        chkEquipements.TabIndex = 3
+        chkEquipements.TextAlign = Drawing.ContentAlignment.MiddleCenter
+        chkEquipements.UseVisualStyleBackColor = True
+        ' 
+        ' nudEquipements
+        ' 
+        nudEquipements.Enabled = False
+        nudEquipements.Font = New System.Drawing.Font("Segoe UI", 18F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        nudEquipements.Increment = New Decimal(New Integer() {2, 0, 0, 0})
+        nudEquipements.Location = New System.Drawing.Point(359, 3)
+        nudEquipements.Maximum = New Decimal(New Integer() {10000, 0, 0, 0})
+        nudEquipements.Minimum = New Decimal(New Integer() {4, 0, 0, 0})
+        nudEquipements.Name = "nudEquipements"
+        nudEquipements.Size = New System.Drawing.Size(83, 39)
+        nudEquipements.TabIndex = 4
+        nudEquipements.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        nudEquipements.Value = New Decimal(New Integer() {4, 0, 0, 0})
         ' 
         ' tlpDensite
         ' 
@@ -338,10 +385,10 @@ Partial Class MainForm
         ' tlpGenerer
         ' 
         tlpGenerer.ColumnCount = 2
-        tlpGenerer.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F))
-        tlpGenerer.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F))
+        tlpGenerer.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F))
+        tlpGenerer.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F))
         tlpGenerer.Controls.Add(btnGenerer, 0, 0)
-        tlpGenerer.Controls.Add(chkDetail, 1, 0)
+        tlpGenerer.Controls.Add(btnGenererEquipements, 1, 0)
         tlpGenerer.Dock = System.Windows.Forms.DockStyle.Fill
         tlpGenerer.Location = New System.Drawing.Point(3, 101)
         tlpGenerer.Name = "tlpGenerer"
@@ -352,27 +399,26 @@ Partial Class MainForm
         ' 
         ' btnGenerer
         ' 
-        btnGenerer.Anchor = System.Windows.Forms.AnchorStyles.None
-        btnGenerer.Font = New System.Drawing.Font("Segoe UI", 18F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        btnGenerer.Location = New System.Drawing.Point(26, 10)
+        btnGenerer.Dock = System.Windows.Forms.DockStyle.Fill
+        btnGenerer.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        btnGenerer.Location = New System.Drawing.Point(3, 3)
         btnGenerer.Name = "btnGenerer"
-        btnGenerer.Size = New System.Drawing.Size(250, 40)
+        btnGenerer.Size = New System.Drawing.Size(226, 55)
         btnGenerer.TabIndex = 0
-        btnGenerer.Text = "Générer"
+        btnGenerer.Text = "Générer map"
         btnGenerer.UseVisualStyleBackColor = True
         ' 
-        ' chkDetail
+        ' btnGenererEquipements
         ' 
-        chkDetail.Anchor = System.Windows.Forms.AnchorStyles.None
-        chkDetail.AutoSize = True
-        chkDetail.Enabled = False
-        chkDetail.Font = New System.Drawing.Font("Segoe UI", 12F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
-        chkDetail.Location = New System.Drawing.Point(317, 18)
-        chkDetail.Name = "chkDetail"
-        chkDetail.Size = New System.Drawing.Size(132, 25)
-        chkDetail.TabIndex = 1
-        chkDetail.Text = "Afficher détails"
-        chkDetail.UseVisualStyleBackColor = True
+        btnGenererEquipements.Dock = System.Windows.Forms.DockStyle.Fill
+        btnGenererEquipements.Enabled = False
+        btnGenererEquipements.Font = New System.Drawing.Font("Segoe UI", 15.75F, Drawing.FontStyle.Regular, Drawing.GraphicsUnit.Point, CByte(0))
+        btnGenererEquipements.Location = New System.Drawing.Point(235, 3)
+        btnGenererEquipements.Name = "btnGenererEquipements"
+        btnGenererEquipements.Size = New System.Drawing.Size(227, 55)
+        btnGenererEquipements.TabIndex = 1
+        btnGenererEquipements.Text = "Spawn équipements"
+        btnGenererEquipements.UseVisualStyleBackColor = True
         ' 
         ' tlpRepartition
         ' 
@@ -580,14 +626,14 @@ Partial Class MainForm
         tlpDimensions.ResumeLayout(False)
         tlpDimensions.PerformLayout()
         tlpParametresGeneraux.ResumeLayout(False)
-        tlpPoids.ResumeLayout(False)
-        tlpPoids.PerformLayout()
+        tlpPoidsEquipements.ResumeLayout(False)
+        tlpPoidsEquipements.PerformLayout()
         CType(nudPoidsMax, ComponentModel.ISupportInitialize).EndInit()
+        CType(nudEquipements, ComponentModel.ISupportInitialize).EndInit()
         tlpDensite.ResumeLayout(False)
         tlpDensite.PerformLayout()
         CType(trkDensite, ComponentModel.ISupportInitialize).EndInit()
         tlpGenerer.ResumeLayout(False)
-        tlpGenerer.PerformLayout()
         tlpRepartition.ResumeLayout(False)
         tlpRepartition.PerformLayout()
         CType(trkLeger, ComponentModel.ISupportInitialize).EndInit()
@@ -606,7 +652,7 @@ Partial Class MainForm
     Friend WithEvents tlpParametres As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpDimensions As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpParametresGeneraux As System.Windows.Forms.TableLayoutPanel
-    Friend WithEvents tlpPoids As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents tlpPoidsEquipements As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents tlpDensite As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents nudPoidsMax As System.Windows.Forms.NumericUpDown
@@ -628,7 +674,6 @@ Partial Class MainForm
     Friend WithEvents lblValeurEtage As System.Windows.Forms.Label
     Friend WithEvents tlpGenerer As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents btnGenerer As System.Windows.Forms.Button
-    Friend WithEvents chkDetail As System.Windows.Forms.CheckBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Label8 As System.Windows.Forms.Label
@@ -636,4 +681,8 @@ Partial Class MainForm
     Friend WithEvents rdoGrand As System.Windows.Forms.RadioButton
     Friend WithEvents rdoGeant As System.Windows.Forms.RadioButton
     Friend WithEvents mapView As MapView
+    Friend WithEvents Label9 As System.Windows.Forms.Label
+    Friend WithEvents chkEquipements As System.Windows.Forms.CheckBox
+    Friend WithEvents nudEquipements As System.Windows.Forms.NumericUpDown
+    Friend WithEvents btnGenererEquipements As System.Windows.Forms.Button
 End Class
