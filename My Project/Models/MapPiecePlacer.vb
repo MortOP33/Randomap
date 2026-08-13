@@ -8,20 +8,34 @@ Public Class MapPiecePlacer
 
     ' Nombre maximum de tentatives pour placer UNE pièce.
     ' Ce compteur est réinitialisé à chaque appel de TryPlacePiece.
-    Private Const MaxPiecePlacementAttempts As Integer = 1000
+    Private Const MaxPiecePlacementAttempts As Integer = 5000
+
+    Private Const TerrainClearanceCells As Integer = 8
+
+    ' =========================================================
+    ' CLASSE DE STOCKAGE DES COORDONNEES DE RACCORDEMENT DE PIECES
+    ' =========================================================
+
+    Private Class ConnectionCandidate
+
+        Public Property StartX As Integer
+        Public Property StartY As Integer
+        Public Property PieceConnectionX As Integer
+        Public Property PieceConnectionY As Integer
+        Public Property MapConnectionX As Integer
+        Public Property MapConnectionY As Integer
+
+    End Class
 
     ' =========================================================
     ' VERIFICATION D'UNE POSITION
     ' =========================================================
 
-    Private Function CanPlacePiece(generation As MapGeneration, piece As TerrainPiece, startX As Integer, startY As Integer, rotation As PieceRotation) As Boolean
+    Private Function CanPlacePiece(generation As MapGeneration, piece As TerrainPiece, startX As Integer, startY As Integer, rotation As PieceRotation, connectionCandidate As ConnectionCandidate) As Boolean
 
-        Dim mapHeight As Integer =
-            generation.Template.HeightCells
+        Dim mapHeight As Integer = generation.Template.HeightCells
 
-        Dim mapWidth As Integer =
-            generation.Template.WidthCells
-
+        Dim mapWidth As Integer = generation.Template.WidthCells
 
         ' ---------------------------------------------------------
         ' Parcours de toutes les cellules de la pièce
@@ -62,21 +76,15 @@ Public Class MapPiecePlacer
                 ' Position réelle de cette cellule sur la carte
                 ' -------------------------------------------------
 
-                Dim mapX As Integer =
-                    startX + row
+                Dim mapX As Integer = startX + row
 
-                Dim mapY As Integer =
-                    startY + column
-
+                Dim mapY As Integer = startY + column
 
                 ' -------------------------------------------------
                 ' 1. La cellule active doit rester dans la carte
                 ' -------------------------------------------------
 
-                If mapX < 0 OrElse
-                   mapX >= mapHeight OrElse
-                   mapY < 0 OrElse
-                   mapY >= mapWidth Then
+                If mapX < 0 OrElse mapX >= mapHeight OrElse mapY < 0 OrElse mapY >= mapWidth Then
 
                     Return False
 
@@ -87,13 +95,9 @@ Public Class MapPiecePlacer
                 ' 2. Vérification des zones d'insertion
                 ' -------------------------------------------------
 
-                For Each zone As InsertionZone In
-                    generation.InsertionZones
+                For Each zone As InsertionZone In generation.InsertionZones
 
-                    If IsInsideInsertionZone(
-                        mapX,
-                        mapY,
-                        zone) Then
+                    If IsInsideInsertionZone(mapX, mapY, zone) Then
 
                         Return False
 
@@ -106,13 +110,9 @@ Public Class MapPiecePlacer
                 ' 3. Vérification des zones d'objectif
                 ' -------------------------------------------------
 
-                For Each zone As ObjectiveZone In
-                    generation.ObjectiveZones
+                For Each zone As ObjectiveZone In generation.ObjectiveZones
 
-                    If IsInsideObjectiveZone(
-                        mapX,
-                        mapY,
-                        zone) Then
+                    If IsInsideObjectiveZone(mapX, mapY, zone) Then
 
                         Return False
 
@@ -125,11 +125,24 @@ Public Class MapPiecePlacer
                 ' 4. Vérification des pièces déjà placées
                 ' -------------------------------------------------
 
-                If generation.OccupiedCells(
-                    mapX,
-                    mapY) Then
+                If generation.OccupiedCells(mapX, mapY) Then
 
                     Return False
+
+                End If
+
+
+                ' -------------------------------------------------
+                ' 5. Vérification des pièces adjacentes (espacement)
+                ' -------------------------------------------------
+
+                If state = TerrainCellState.Occupied OrElse state = TerrainCellState.Connection Then
+
+                    If HasTerrainClearanceViolation(generation, mapX, mapY, connectionCandidate) Then
+
+                        Return False
+
+                    End If
 
                 End If
 
@@ -140,6 +153,159 @@ Public Class MapPiecePlacer
 
         ' Toutes les cellules actives sont valides.
         Return True
+
+    End Function
+
+    ' =========================================================
+    ' VERIFICATION DES ESPACES ADJACENT DISPONIBLES
+    ' =========================================================
+    Private Function HasTerrainClearanceViolation(generation As MapGeneration, mapX As Integer, mapY As Integer, connectionCandidate As ConnectionCandidate) As Boolean
+
+        ' =========================================================
+        ' Détermination de l'axe de connexion
+        ' =========================================================
+
+        Dim hasConnection As Boolean = connectionCandidate IsNot Nothing
+
+        Dim connectionIsVertical As Boolean = False
+
+        Dim connectionCoordinate As Integer = 0
+
+        If hasConnection Then
+
+            If connectionCandidate.PieceConnectionY = connectionCandidate.MapConnectionY Then
+
+                ' Même colonne :
+                ' le raccordement est vertical.
+
+                connectionIsVertical = True
+                connectionCoordinate = connectionCandidate.MapConnectionY
+
+            Else
+
+                ' Même ligne :
+                ' le raccordement est horizontal.
+
+                connectionIsVertical = False
+                connectionCoordinate = connectionCandidate.MapConnectionX
+
+            End If
+
+        End If
+
+
+        ' =========================================================
+        ' Détermination de l'appartenance à l'axe de raccordement
+        ' =========================================================
+
+        Dim isOnConnectionAxis As Boolean = False
+
+        If hasConnection Then
+
+            If connectionIsVertical Then
+
+                isOnConnectionAxis = mapY = connectionCoordinate
+
+            Else
+
+                isOnConnectionAxis = mapX = connectionCoordinate
+
+            End If
+
+        End If
+
+
+        ' =========================================================
+        ' Vérification verticale
+        ' =========================================================
+
+        For distance As Integer = 1 To TerrainClearanceCells
+
+            Dim targetX As Integer = mapX - distance
+
+            Dim targetY As Integer = mapY
+
+            ' -----------------------------------------------------
+            ' HAUT
+            ' -----------------------------------------------------
+
+            ' Si la nouvelle cellule est sur un axe vertical de
+            ' connexion, la direction verticale est libre.
+            If Not (hasConnection AndAlso connectionIsVertical AndAlso isOnConnectionAxis) Then
+
+                If IsOccupiedTerrainCell(generation, targetX, targetY) Then
+
+                    Return True
+
+                End If
+
+            End If
+
+
+            ' -----------------------------------------------------
+            ' BAS
+            ' -----------------------------------------------------
+
+            If Not (hasConnection AndAlso connectionIsVertical AndAlso isOnConnectionAxis) Then
+
+                targetX = mapX + distance
+
+                If IsOccupiedTerrainCell(generation, targetX, targetY) Then
+
+                    Return True
+
+                End If
+
+            End If
+
+        Next
+
+
+        ' =========================================================
+        ' Vérification horizontale
+        ' =========================================================
+
+        For distance As Integer = 1 To TerrainClearanceCells
+
+            Dim targetX As Integer = mapX
+
+            Dim targetY As Integer = mapY - distance
+
+            ' -----------------------------------------------------
+            ' GAUCHE
+            ' -----------------------------------------------------
+
+            If Not (hasConnection AndAlso Not connectionIsVertical AndAlso isOnConnectionAxis) Then
+
+                If IsOccupiedTerrainCell(generation, targetX, targetY) Then
+
+                    Return True
+
+                End If
+
+            End If
+
+
+            ' -----------------------------------------------------
+            ' DROITE
+            ' -----------------------------------------------------
+
+            If Not (hasConnection AndAlso Not connectionIsVertical AndAlso isOnConnectionAxis) Then
+
+                targetY = mapY + distance
+
+                If IsOccupiedTerrainCell(generation, targetX, targetY) Then
+
+                    Return True
+
+                End If
+
+            End If
+
+        Next
+
+
+        Return False
 
     End Function
 
@@ -208,6 +374,34 @@ Public Class MapPiecePlacer
         Next
 
         Return False
+
+    End Function
+
+    ' =========================================================
+    ' VERIFICATION DE LA DISPONIBILITE D'UNE CELLULE
+    ' =========================================================
+
+    Private Function IsOccupiedTerrainCell(generation As MapGeneration, mapX As Integer, mapY As Integer) As Boolean
+
+        ' ---------------------------------------------------------
+        ' Hors carte :
+        ' ce n'est pas une collision de terrain.
+        '
+        ' La vérification "hors carte" est déjà réalisée
+        ' séparément par CanPlacePiece.
+        ' ---------------------------------------------------------
+
+        If mapX < 0 OrElse
+            mapX >= generation.Template.HeightCells OrElse
+            mapY < 0 OrElse
+            mapY >= generation.Template.WidthCells Then
+
+            Return False
+
+        End If
+
+
+        Return generation.OccupiedCells(mapX, mapY)
 
     End Function
 
@@ -308,6 +502,52 @@ Public Class MapPiecePlacer
 
     End Function
 
+    Private Function GetPieceRotationOrder() As List(Of PieceRotation)
+
+        Dim firstRotation As PieceRotation = RollPieceRotation()
+
+        Dim rotations As New List(Of PieceRotation)()
+
+
+        Select Case firstRotation
+
+            Case PieceRotation.Deg0
+
+                rotations.Add(PieceRotation.Deg0)
+                rotations.Add(PieceRotation.Deg90)
+                rotations.Add(PieceRotation.Deg180)
+                rotations.Add(PieceRotation.Deg270)
+
+
+            Case PieceRotation.Deg90
+
+                rotations.Add(PieceRotation.Deg90)
+                rotations.Add(PieceRotation.Deg180)
+                rotations.Add(PieceRotation.Deg270)
+                rotations.Add(PieceRotation.Deg0)
+
+
+            Case PieceRotation.Deg180
+
+                rotations.Add(PieceRotation.Deg180)
+                rotations.Add(PieceRotation.Deg270)
+                rotations.Add(PieceRotation.Deg0)
+                rotations.Add(PieceRotation.Deg90)
+
+
+            Case PieceRotation.Deg270
+
+                rotations.Add(PieceRotation.Deg270)
+                rotations.Add(PieceRotation.Deg0)
+                rotations.Add(PieceRotation.Deg90)
+                rotations.Add(PieceRotation.Deg180)
+
+        End Select
+
+        Return rotations
+
+    End Function
+
     ' =========================================================
     ' TIRAGE ALEATOIRE DE LA CONNEXTION D'UNE PIECE
     ' =========================================================
@@ -331,17 +571,75 @@ Public Class MapPiecePlacer
 
     Public Function TryPlacePiece(generation As MapGeneration, piece As TerrainPiece, connectPiece As Boolean) As Boolean
 
+        ' =========================================================
+        ' Détermination de l'ordre des rotations
+        '
+        ' Exemple :
+        ' 90° → 180° → 270° → 0°
+        ' =========================================================
+
+        Dim rotations As List(Of PieceRotation) = GetPieceRotationOrder()
+
+        ' =========================================================
+        ' 1. TENTATIVE EN MODE CONNECTÉ
+        ' =========================================================
+
+        If connectPiece Then
+
+            For Each rotation As PieceRotation In rotations
+
+                If TryPlacePieceConnected(generation, piece, rotation) Then
+
+                    Return True
+
+                End If
+
+            Next
+
+
+            ' -----------------------------------------------------
+            ' Les quatre rotations connectées ont échoué.
+            '
+            ' On abandonne maintenant la contrainte de connexion.
+            ' Cela reste autorisé même avec une densité de 100 %.
+            ' -----------------------------------------------------
+
+        End If
+
+
+        ' =========================================================
+        ' 2. TENTATIVE SANS CONNEXION
+        ' =========================================================
+
+        For Each rotation As PieceRotation In rotations
+
+            If TryPlacePieceWithoutConnection(generation, piece, rotation) Then
+
+                Return True
+
+            End If
+
+        Next
+
+
+        ' =========================================================
+        ' 3. ÉCHEC DÉFINITIF
+        ' =========================================================
+
+        Return False
+
+    End Function
+
+    Private Function TryPlacePieceWithoutConnection(generation As MapGeneration, piece As TerrainPiece, rotation As PieceRotation) As Boolean
+
         Dim mapHeight As Integer = generation.Template.HeightCells
 
         Dim mapWidth As Integer = generation.Template.WidthCells
 
-        Dim rotation As PieceRotation = RollPieceRotation()
 
-        If connectPiece Then
-
-            Return TryPlacePieceConnected(generation, piece, rotation)
-
-        End If
+        ' =========================================================
+        ' Dimensions de la pièce après rotation
+        ' =========================================================
 
         Dim rotatedHeight As Integer
         Dim rotatedWidth As Integer
@@ -354,57 +652,40 @@ Public Class MapPiecePlacer
         End If
 
 
-        ' ---------------------------------------------------------
-        ' Chaque pièce dispose de son propre compteur de tentatives.
-        ' ---------------------------------------------------------
+        ' =========================================================
+        ' Tentatives de placement
+        ' =========================================================
 
-        For attempt As Integer =
-            1 To MaxPiecePlacementAttempts
-
+        For attempt As Integer = 1 To MaxPiecePlacementAttempts
 
             ' -----------------------------------------------------
-            ' Le rectangle X/Y de la pièce peut dépasser de la map.
-            '
-            ' On autorise donc un départ négatif ou proche
-            ' de la dernière ligne/colonne.
+            ' Le rectangle X/Y peut dépasser de la map.
+            ' Seules les cellules actives devront rester dedans.
             ' -----------------------------------------------------
 
             Dim startX As Integer = Random.Shared.Next(-(rotatedHeight - 1), mapHeight)
             Dim startY As Integer = Random.Shared.Next(-(rotatedWidth - 1), mapWidth)
 
-
             ' -----------------------------------------------------
-            ' Vérification de la position
+            ' Vérification complète de la position
             ' -----------------------------------------------------
 
-            If CanPlacePiece(
-                generation,
-                piece,
-                startX,
-                startY,
-                rotation) Then
+            If CanPlacePiece(generation, piece, startX, startY, rotation, Nothing) Then
 
                 ' -------------------------------------------------
-                ' Position valide : inscription définitive
+                ' Position valide
                 ' -------------------------------------------------
 
-                RegisterPlacedPiece(
-                    generation,
-                    piece,
-                    startX,
-                    startY,
-                    rotation)
-
+                RegisterPlacedPiece(generation, piece, startX, startY, rotation)
                 Return True
 
             End If
 
         Next
 
-
-        ' ---------------------------------------------------------
-        ' Aucune position valide trouvée.
-        ' ---------------------------------------------------------
+        ' =========================================================
+        ' Aucune position valide pour cette rotation
+        ' =========================================================
 
         Return False
 
@@ -420,7 +701,7 @@ Public Class MapPiecePlacer
         ' Construction des positions candidates.
         ' ---------------------------------------------------------
 
-        Dim candidates As New List(Of Point)
+        Dim candidates As New List(Of ConnectionCandidate)
 
 
         ' ---------------------------------------------------------
@@ -524,11 +805,12 @@ Public Class MapPiecePlacer
         ' Test des positions candidates.
         ' ---------------------------------------------------------
 
-        For Each candidate As Point In candidates
+        For Each candidate As ConnectionCandidate In candidates
 
-            If CanPlacePiece(generation, piece, candidate.X, candidate.Y, rotation) Then
+            If CanPlacePiece(generation, piece, candidate.StartX, candidate.StartY, rotation, candidate) Then
 
-                RegisterPlacedPiece(generation, piece, candidate.X, candidate.Y, rotation)
+                RegisterPlacedPiece(generation, piece, candidate.StartX, candidate.StartY, rotation)
+
                 Return True
 
             End If
@@ -543,26 +825,42 @@ Public Class MapPiecePlacer
     ' AJOUT D'UNE POSITION CANDIDATE
     ' =========================================================
 
-    Private Sub AddConnectionCandidate(candidates As List(Of Point), connectionMapX As Integer, connectionMapY As Integer, connectionPieceX As Integer, connectionPieceY As Integer)
+    Private Sub AddConnectionCandidate(candidates As List(Of ConnectionCandidate), connectionMapX As Integer, connectionMapY As Integer, connectionPieceX As Integer, connectionPieceY As Integer)
 
         Dim startX As Integer = connectionMapX - connectionPieceX
 
         Dim startY As Integer = connectionMapY - connectionPieceY
 
-        Dim candidate As New Point(startX, startY)
+        Dim candidate As New ConnectionCandidate With {
+            .StartX = startX,
+            .StartY = startY,
+            .PieceConnectionX = connectionPieceX,
+            .PieceConnectionY = connectionPieceY,
+            .MapConnectionX = connectionMapX,
+            .MapConnectionY = connectionMapY
+        }
 
         ' ---------------------------------------------------------
-        ' Plusieurs couples de Connections peuvent produire
-        ' exactement la même position.
-        '
-        ' On évite donc les doublons.
+        ' Evite les doublons.
         ' ---------------------------------------------------------
 
-        If Not candidates.Contains(candidate) Then
+        For Each existing As ConnectionCandidate In candidates
 
-            candidates.Add(candidate)
+            If existing.StartX = candidate.StartX AndAlso
+                existing.StartY = candidate.StartY AndAlso
+                existing.PieceConnectionX = candidate.PieceConnectionX AndAlso
+                existing.PieceConnectionY = candidate.PieceConnectionY AndAlso
+                existing.MapConnectionX = candidate.MapConnectionX AndAlso
+                existing.MapConnectionY = candidate.MapConnectionY Then
 
-        End If
+                Return
+
+            End If
+
+        Next
+
+
+        candidates.Add(candidate)
 
     End Sub
 
@@ -570,14 +868,16 @@ Public Class MapPiecePlacer
     ' MELANGE ALEATOIRE DES POSITIONS CANDIDATES
     ' =========================================================
 
-    Private Sub ShuffleCandidates(candidates As List(Of Point))
+    Private Sub ShuffleCandidates(candidates As List(Of ConnectionCandidate))
 
         For index As Integer = candidates.Count - 1 To 1 Step -1
 
             Dim otherIndex As Integer = Random.Shared.Next(0, index + 1)
-            Dim temporary As Point = candidates(index)
+
+            Dim temporary As ConnectionCandidate = candidates(index)
 
             candidates(index) = candidates(otherIndex)
+
             candidates(otherIndex) = temporary
 
         Next
