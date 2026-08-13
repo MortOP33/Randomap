@@ -17,6 +17,8 @@ Public Class MainForm
 
         lblValeurDensite.Text = $"{trkDensite.Value}%"
 
+        UpdatePieceTypeProbabilities()
+
         RefreshGestionBDD()
 
     End Sub
@@ -27,13 +29,113 @@ Public Class MainForm
 
     End Sub
 
+    Private Sub trkLeger_ValueChanged(sender As Object, e As EventArgs) Handles trkLeger.ValueChanged
+
+        UpdatePieceTypeProbabilities()
+
+    End Sub
+
+    Private Sub trkLourd_ValueChanged(sender As Object, e As EventArgs) Handles trkLourd.ValueChanged
+
+        UpdatePieceTypeProbabilities()
+
+    End Sub
+
+    Private Sub trkEtage_ValueChanged(sender As Object, e As EventArgs) Handles trkEtage.ValueChanged
+
+        UpdatePieceTypeProbabilities()
+
+    End Sub
+
+    Private Sub UpdatePieceTypeProbabilities()
+
+        Dim leger As Integer = trkLeger.Value
+        Dim lourd As Integer = trkLourd.Value
+        Dim etage As Integer = trkEtage.Value
+        Dim total As Integer = leger + lourd + etage
+
+
+        If total <= 0 Then
+            lblValeurLeger.Text = "0%"
+            lblValeurLourd.Text = "0%"
+            lblValeurEtage.Text = "0%"
+            Return
+        End If
+
+
+        Dim probabilityLeger As Integer =
+        CInt(Math.Round(
+            leger * 100.0 / total,
+            MidpointRounding.AwayFromZero))
+
+        Dim probabilityLourd As Integer =
+        CInt(Math.Round(
+            lourd * 100.0 / total,
+            MidpointRounding.AwayFromZero))
+
+        Dim probabilityEtage As Integer =
+        CInt(Math.Round(
+            etage * 100.0 / total,
+            MidpointRounding.AwayFromZero))
+
+
+        lblValeurLeger.Text = $"{probabilityLeger}%"
+        lblValeurLourd.Text = $"{probabilityLourd}%"
+        lblValeurEtage.Text = $"{probabilityEtage}%"
+
+    End Sub
+
+    Private Function GetPieceTypeWeights() As Integer()
+
+        Dim leger As Integer = trkLeger.Value
+        Dim lourd As Integer = trkLourd.Value
+        Dim etage As Integer = trkEtage.Value
+        Dim total As Integer = leger + lourd + etage
+
+        If total <= 0 Then
+            Return New Integer() {0, 0, 0}
+        End If
+
+        Dim probabilityLeger As Integer =
+        CInt(Math.Round(
+            leger * 100.0 / total,
+            MidpointRounding.AwayFromZero))
+
+        Dim probabilityLourd As Integer =
+        CInt(Math.Round(
+            lourd * 100.0 / total,
+            MidpointRounding.AwayFromZero))
+
+        Dim probabilityEtage As Integer =
+        CInt(Math.Round(
+            etage * 100.0 / total,
+            MidpointRounding.AwayFromZero))
+
+        Return New Integer() {probabilityLeger, probabilityLourd, probabilityEtage}
+
+    End Function
+
     Private Sub btnGenerer_Click(sender As Object, e As EventArgs) Handles btnGenerer.Click
 
         Dim selectedTemplate As MapTemplate = GetSelectedTemplate()
 
         Dim definition As MapTemplateDefinition = MapTemplates.GetDefinition(selectedTemplate)
 
-        Dim generation As MapGeneration = MapTemplateGenerator.Generate(definition, CInt(nudPoidsMax.Value), CInt(trkDensite.Value))
+        ' =========================================================
+        ' Récupération des pondérations par type
+        ' =========================================================
+
+        Dim pieceTypeWeights As Integer() = GetPieceTypeWeights()
+        Dim weightLeger As Integer = pieceTypeWeights(0)
+        Dim weightLourd As Integer = pieceTypeWeights(1)
+        Dim weightEtage As Integer = pieceTypeWeights(2)
+
+        ' =========================================================
+        ' Génération
+        ' =========================================================
+
+        Dim generation As MapGeneration = MapTemplateGenerator.Generate(definition, CInt(nudPoidsMax.Value), CInt(trkDensite.Value), weightLeger, weightLourd, weightEtage)
+
 
         mapView.Generation = generation
 

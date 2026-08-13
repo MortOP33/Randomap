@@ -4,7 +4,7 @@ Public Module MapTemplateGenerator
 
     Private Const MaxAttempts As Integer = 1000
 
-    Public Function Generate(template As MapTemplateDefinition, targetWeight As Integer, connectionDensity As Integer) As MapGeneration
+    Public Function Generate(template As MapTemplateDefinition, targetWeight As Integer, connectionDensity As Integer, weightLeger As Integer, weightLourd As Integer, weightEtage As Integer) As MapGeneration
 
         Dim generation As New MapGeneration(template) With {
             .InsertionAxis = RollInsertionAxis(),
@@ -14,7 +14,7 @@ Public Module MapTemplateGenerator
         GenerateInsertionZones(generation)
         GenerateObjectiveZones(generation)
 
-        Dim success As Boolean = GenerateTerrainPieces(generation, targetWeight, connectionDensity)
+        Dim success As Boolean = GenerateTerrainPieces(generation, targetWeight, connectionDensity, weightLeger, weightLourd, weightEtage)
         If Not success Then
             Return generation
         End If
@@ -27,7 +27,7 @@ Public Module MapTemplateGenerator
     ' GENERATION DES PIECES DE DECOR
     ' =========================================================
 
-    Private Function GenerateTerrainPieces(generation As MapGeneration, targetWeight As Integer, connectionDensity As Integer) As Boolean
+    Private Function GenerateTerrainPieces(generation As MapGeneration, targetWeight As Integer, connectionDensity As Integer, weightLeger As Integer, weightLourd As Integer, weightEtage As Integer) As Boolean
 
         Dim repository As New TerrainPieceRepository()
 
@@ -134,20 +134,59 @@ Public Module MapTemplateGenerator
 
 
             ' -----------------------------------------------------
-            ' Tirage pondéré d'une pièce
+            ' Tirage du type de pièce
             ' -----------------------------------------------------
 
-            Dim selectedPiece As TerrainPiece = SelectWeightedPiece(pieces, remainingOccurrences)
+            Dim selectedType As TerrainPieceType? = RollAvailablePieceType(pieces, remainingOccurrences, weightLeger, weightLourd, weightEtage)
 
+            If Not selectedType.HasValue Then
+
+                MessageBox.Show(
+                    "Impossible de sélectionner un type de pièce " &
+                    "pour poursuivre la génération.",
+                    "Génération interrompue",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+                Return False
+
+            End If
+
+            ' -----------------------------------------------------
+            ' Sélection d'une pièce appartenant au type tiré
+            ' -----------------------------------------------------
+
+            Dim piecesOfSelectedType As List(Of TerrainPiece) = pieces.Where(
+                Function(piece)
+                    Return piece.Type = selectedType.Value AndAlso
+                   remainingOccurrences(piece) > 0 AndAlso
+                   piece.Weight > 0
+                End Function).ToList()
+
+
+            If piecesOfSelectedType.Count = 0 Then
+
+                MessageBox.Show(
+                "Le type de pièce sélectionné ne possède " &
+                "plus de pièce disponible.",
+                "Génération interrompue",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning)
+
+                Return False
+
+            End If
+
+            Dim selectedPiece As TerrainPiece = piecesOfSelectedType(Random.Shared.Next(0, piecesOfSelectedType.Count))
 
             If selectedPiece Is Nothing Then
 
                 MessageBox.Show(
-                "Impossible de sélectionner une pièce " &
-                "pour poursuivre la génération.",
-                "Génération interrompue",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning)
+                    "Impossible de sélectionner une pièce " &
+                    "pour poursuivre la génération.",
+                    "Génération interrompue",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
 
                 Return False
 
@@ -321,6 +360,56 @@ Public Module MapTemplateGenerator
         Else
             Return GameMode.Offset
         End If
+
+    End Function
+
+    Private Function RollAvailablePieceType(pieces As List(Of TerrainPiece), remainingOccurrences As Dictionary(Of TerrainPiece, Integer), weightLeger As Integer, weightLourd As Integer, weightEtage As Integer) As TerrainPieceType?
+
+        Dim availableLeger As Boolean = pieces.Any(
+        Function(piece)
+            Return piece.Type = TerrainPieceType.LEGER AndAlso
+                   remainingOccurrences(piece) > 0 AndAlso
+                   piece.Weight > 0
+        End Function)
+
+        Dim availableLourd As Boolean = pieces.Any(
+        Function(piece)
+            Return piece.Type = TerrainPieceType.LOURD AndAlso
+                   remainingOccurrences(piece) > 0 AndAlso
+                   piece.Weight > 0
+        End Function)
+
+        Dim availableEtage As Boolean = pieces.Any(
+        Function(piece)
+            Return piece.Type = TerrainPieceType.ETAGE AndAlso
+                   remainingOccurrences(piece) > 0 AndAlso
+                   piece.Weight > 0
+        End Function)
+
+        Dim effectiveLeger As Integer = If(availableLeger, weightLeger, 0)
+        Dim effectiveLourd As Integer = If(availableLourd, weightLourd, 0)
+        Dim effectiveEtage As Integer = If(availableEtage, weightEtage, 0)
+
+
+        Dim total As Integer = effectiveLeger + effectiveLourd + effectiveEtage
+
+        If total <= 0 Then
+            Return Nothing
+        End If
+
+        Dim roll As Integer = Random.Shared.Next(0, total)
+
+        If roll < effectiveLeger Then
+            Return TerrainPieceType.LEGER
+        End If
+
+        roll -= effectiveLeger
+
+        If roll < effectiveLourd Then
+            Return TerrainPieceType.LOURD
+        End If
+
+        Return TerrainPieceType.ETAGE
 
     End Function
 

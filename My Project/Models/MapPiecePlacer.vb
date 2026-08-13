@@ -8,7 +8,7 @@ Public Class MapPiecePlacer
 
     ' Nombre maximum de tentatives pour placer UNE pièce.
     ' Ce compteur est réinitialisé à chaque appel de TryPlacePiece.
-    Private Const MaxPiecePlacementAttempts As Integer = 5000
+    Private Const MaxPiecePlacementAttempts As Integer = 1000
 
     Private Const TerrainClearanceCells As Integer = 8
 
